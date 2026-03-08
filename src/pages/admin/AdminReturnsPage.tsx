@@ -129,6 +129,9 @@ export default function AdminReturnsPage() {
     });
   }, [returns, search, statusFilter, typeFilter]);
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   // Status update mutation
   const updateReturn = useMutation({
     mutationFn: async (params: { id: string; updates: Record<string, any>; newStatus?: string; oldStatus?: string; reason?: string }) => {
