@@ -137,9 +137,9 @@ export default function IndexPage() {
 
   const trustItems = [
     { icon: Droplets, label: 'عسل طبيعي 100%', desc: 'بدون إضافات', color: 'from-amber-500 to-yellow-500' },
-    { icon: Truck, label: 'توصيل سريع', desc: 'لجميع الولايات', color: 'from-emerald-500 to-teal-500' },
-    { icon: Shield, label: 'جودة معتمدة', desc: 'منتجات مختارة', color: 'from-blue-500 to-indigo-500' },
-    { icon: Leaf, label: 'بدون مواد حافظة', desc: '100% طبيعي', color: 'from-green-500 to-emerald-500' },
+    { icon: Truck, label: 'توصيل سريع', desc: 'لجميع الولايات', color: 'from-amber-600 to-orange-500' },
+    { icon: Shield, label: 'جودة معتمدة', desc: 'منتجات مختارة', color: 'from-amber-500 to-yellow-500' },
+    { icon: Leaf, label: 'بدون مواد حافظة', desc: '100% طبيعي', color: 'from-yellow-600 to-amber-500' },
   ];
 
   const categoryCards = [
