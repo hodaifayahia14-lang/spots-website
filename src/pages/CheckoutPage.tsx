@@ -281,6 +281,25 @@ export default function CheckoutPage() {
 
     setSubmitting(true);
     try {
+      // Validate stock availability before placing order
+      for (const item of items) {
+        if (item.variantId) {
+          const { data: variant } = await supabase.from('product_variants').select('quantity').eq('id', item.variantId).single();
+          if (variant && variant.quantity < item.quantity) {
+            toast({ title: 'خطأ', description: `المنتج "${item.name}" غير متوفر بالكمية المطلوبة (متوفر: ${variant.quantity})`, variant: 'destructive' });
+            setSubmitting(false);
+            return;
+          }
+        } else {
+          const { data: prod } = await supabase.from('products').select('stock').eq('id', item.id).single();
+          if (prod && (prod.stock ?? 0) < item.quantity) {
+            toast({ title: 'خطأ', description: `المنتج "${item.name}" غير متوفر بالكمية المطلوبة (متوفر: ${prod.stock ?? 0})`, variant: 'destructive' });
+            setSubmitting(false);
+            return;
+          }
+        }
+      }
+
       let receiptUrl = '';
       if (receiptFile) {
         const ext = receiptFile.name.split('.').pop();
