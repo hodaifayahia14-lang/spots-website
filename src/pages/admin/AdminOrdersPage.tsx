@@ -63,6 +63,7 @@ export default function AdminOrdersPage() {
   const [deliveryDialog, setDeliveryDialog] = useState(false);
   const [selectedCompanyId, setSelectedCompanyId] = useState('');
   const [exportingDelivery, setExportingDelivery] = useState(false);
+  const [importDialog, setImportDialog] = useState(false);
 
   const { data: orders } = useQuery({
     queryKey: ['admin-orders'],
