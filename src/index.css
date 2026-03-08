@@ -1,92 +1,97 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* Dark mode only — forced via class="dark" on html */
   :root {
-    --background: 220 20% 97%;
-    --foreground: 220 30% 8%;
-
-    --card: 220 20% 99%;
-    --card-foreground: 220 30% 8%;
-
-    --popover: 220 20% 99%;
-    --popover-foreground: 220 30% 8%;
-
-    --primary: 145 80% 42%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 100% 50%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 220 15% 93%;
-    --muted-foreground: 220 10% 42%;
-
-    --accent: 35 100% 55%;
-    --accent-foreground: 35 100% 15%;
-
-    --destructive: 0 78% 57%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 15% 90%;
-    --input: 220 15% 90%;
-    --ring: 145 80% 42%;
-
-    --radius: 0.625rem;
-
-    --sidebar-background: 220 20% 99%;
-    --sidebar-foreground: 220 30% 8%;
-    --sidebar-primary: 145 80% 42%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 93%;
-    --sidebar-accent-foreground: 145 80% 30%;
-    --sidebar-border: 220 15% 90%;
-    --sidebar-ring: 145 80% 42%;
-
-    --success: 145 80% 42%;
-    --warning: 35 100% 55%;
-    --info: 210 100% 50%;
-  }
-
-  .dark {
-    --background: 220 25% 6%;
+    --background: 230 25% 4%;
     --foreground: 220 15% 93%;
 
-    --card: 220 20% 10%;
+    --card: 230 20% 8%;
     --card-foreground: 220 15% 93%;
 
-    --popover: 220 20% 10%;
+    --popover: 230 20% 8%;
     --popover-foreground: 220 15% 93%;
 
-    --primary: 145 80% 48%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 152 100% 50%;
+    --primary-foreground: 230 25% 4%;
 
-    --secondary: 210 100% 55%;
+    --secondary: 18 100% 50%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 15% 16%;
+    --muted: 230 15% 14%;
     --muted-foreground: 220 10% 55%;
 
-    --accent: 35 100% 55%;
-    --accent-foreground: 35 100% 90%;
+    --accent: 48 100% 50%;
+    --accent-foreground: 48 100% 10%;
 
     --destructive: 0 78% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 18%;
-    --input: 220 15% 18%;
-    --ring: 145 80% 48%;
+    --border: 230 15% 15%;
+    --input: 230 15% 15%;
+    --ring: 152 100% 50%;
 
-    --sidebar-background: 220 25% 6%;
+    --radius: 0.625rem;
+
+    --sidebar-background: 230 25% 6%;
     --sidebar-foreground: 220 15% 93%;
-    --sidebar-primary: 145 80% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 14%;
-    --sidebar-accent-foreground: 145 80% 70%;
-    --sidebar-border: 220 15% 18%;
-    --sidebar-ring: 145 80% 48%;
+    --sidebar-primary: 152 100% 50%;
+    --sidebar-primary-foreground: 230 25% 4%;
+    --sidebar-accent: 230 15% 14%;
+    --sidebar-accent-foreground: 152 100% 60%;
+    --sidebar-border: 230 15% 15%;
+    --sidebar-ring: 152 100% 50%;
+
+    --success: 152 100% 50%;
+    --warning: 48 100% 50%;
+    --info: 210 100% 55%;
+
+    --neon-green: 152 100% 50%;
+    --neon-orange: 18 100% 50%;
+    --neon-gold: 48 100% 50%;
+  }
+
+  .dark {
+    --background: 230 25% 4%;
+    --foreground: 220 15% 93%;
+
+    --card: 230 20% 8%;
+    --card-foreground: 220 15% 93%;
+
+    --popover: 230 20% 8%;
+    --popover-foreground: 220 15% 93%;
+
+    --primary: 152 100% 50%;
+    --primary-foreground: 230 25% 4%;
+
+    --secondary: 18 100% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 230 15% 14%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 48 100% 50%;
+    --accent-foreground: 48 100% 10%;
+
+    --destructive: 0 78% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 230 15% 15%;
+    --input: 230 15% 15%;
+    --ring: 152 100% 50%;
+
+    --sidebar-background: 230 25% 6%;
+    --sidebar-foreground: 220 15% 93%;
+    --sidebar-primary: 152 100% 50%;
+    --sidebar-primary-foreground: 230 25% 4%;
+    --sidebar-accent: 230 15% 14%;
+    --sidebar-accent-foreground: 152 100% 60%;
+    --sidebar-border: 230 15% 15%;
+    --sidebar-ring: 152 100% 50%;
   }
 }
 
@@ -113,6 +118,10 @@
     font-family: 'Bebas Neue', sans-serif;
   }
 
+  .font-barlow {
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
   .price-text {
     font-family: 'Roboto', sans-serif;
     direction: ltr;
@@ -130,35 +139,27 @@
   .stagger-4 { animation-delay: 0.2s; }
   .stagger-5 { animation-delay: 0.25s; }
   .stagger-6 { animation-delay: 0.3s; }
-  .stagger-7 { animation-delay: 0.35s; }
-  .stagger-8 { animation-delay: 0.4s; }
 
-  /* Speed lines for sports energy */
-  .speed-lines::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 10px,
-      hsl(var(--primary) / 0.03) 10px,
-      hsl(var(--primary) / 0.03) 20px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* Neon glow utility */
+  /* Neon glow utilities */
   .neon-glow {
     text-shadow: 0 0 10px hsl(var(--primary) / 0.5), 0 0 40px hsl(var(--primary) / 0.2);
   }
 
-  .neon-glow-blue {
+  .neon-glow-orange {
     text-shadow: 0 0 10px hsl(var(--secondary) / 0.5), 0 0 40px hsl(var(--secondary) / 0.2);
   }
 
-  /* Sports card hover effect */
+  .neon-border {
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.3), inset 0 0 8px hsl(var(--primary) / 0.05);
+  }
+
+  .neon-focus:focus-within {
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.5), 0 0 20px hsl(var(--primary) / 0.15);
+    border-color: hsl(var(--primary) / 0.6);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  /* Sport card hover */
   .sport-card-hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
@@ -167,7 +168,15 @@
     box-shadow: 0 20px 40px -15px hsl(var(--primary) / 0.25);
   }
 
-  /* === Premium Supplier Module Utilities === */
+  /* Jersey stripe rows */
+  .jersey-stripe tbody tr:nth-child(even) {
+    background-color: hsl(var(--muted) / 0.3);
+  }
+  .jersey-stripe tbody tr:hover {
+    background-color: hsl(var(--primary) / 0.05);
+  }
+
+  /* Glass effect */
   .glass {
     backdrop-filter: blur(12px);
     background: hsl(var(--card) / 0.85);
@@ -178,21 +187,12 @@
   }
   .hover-lift:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px -5px rgb(0 0 0 / 0.1);
+    box-shadow: 0 8px 25px -5px rgb(0 0 0 / 0.3);
   }
 
   .glow-focus:focus-within {
     box-shadow: 0 0 0 3px hsl(var(--ring) / 0.3);
     transition: box-shadow 0.2s ease;
-  }
-
-  .row-accent {
-    transition: border-color 0.15s ease, background-color 0.15s ease;
-    border-left: 3px solid transparent;
-  }
-  .row-accent:hover {
-    border-left-color: hsl(var(--primary));
-    background-color: hsl(var(--muted) / 0.5);
   }
 
   .upload-zone {
@@ -206,18 +206,48 @@
   }
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .animate-blob-morph,
-  .animate-float,
-  .neon-glow,
-  .neon-glow-blue {
-    animation: none !important;
-    text-shadow: none !important;
-  }
+/* Sport ball spinner */
+@keyframes sport-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* Hide scrollbar utility */
+.sport-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid hsl(var(--muted));
+  border-top: 3px solid hsl(var(--primary));
+  border-radius: 50%;
+  animation: sport-spin 0.8s linear infinite;
+}
+
+/* Keyframes */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes glow-border {
+  0%, 100% { box-shadow: 0 0 5px hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 20px hsl(var(--primary) / 0.6); }
+}
+
+@keyframes slide-in-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-transition {
+  animation: pageIn 0.3s ease-out;
+}
+
+/* Hide scrollbar */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -226,29 +256,17 @@
   display: none;
 }
 
-/* Smooth page transitions */
-.page-transition {
-  animation: pageIn 0.3s ease-out;
-}
-
-@keyframes pageIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .sport-spinner,
+  .neon-glow,
+  .neon-glow-orange {
+    animation: none !important;
+    text-shadow: none !important;
   }
 }
 
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Touch-friendly tap target */
+/* Touch devices */
 @media (hover: none) {
   .group:hover .group-hover\:opacity-100 {
     opacity: 1 !important;
