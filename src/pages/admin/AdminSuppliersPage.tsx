@@ -155,7 +155,7 @@ export default function AdminSuppliersPage() {
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(s => <SupplierCard key={s.id} supplier={s} />)}
+          {paginatedFiltered.map(s => <SupplierCard key={s.id} supplier={s} />)}
         </div>
       ) : (
         <div className="bg-card rounded-xl border overflow-hidden">
