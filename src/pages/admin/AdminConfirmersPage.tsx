@@ -478,7 +478,7 @@ export default function AdminConfirmersPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {filteredConfirmers.map(c => (
+                    {paginatedConfirmers.map(c => (
                       <tr key={c.id} className={`hover:bg-muted/30 transition-colors group ${c.status === 'inactive' ? 'opacity-50' : ''}`}>
                         <td className="p-3">
                           <div className="font-cairo font-medium text-foreground">{c.name}</div>
