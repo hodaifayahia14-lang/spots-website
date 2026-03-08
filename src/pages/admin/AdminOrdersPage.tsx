@@ -12,7 +12,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Search, Eye, ExternalLink, AlertTriangle, MoreHorizontal, PackageCheck, Truck, Clock, Ban, PackageOpen, CheckCircle, Filter, ChevronDown, ChevronUp, Loader2, CheckSquare, Zap, Plus, Download, Trash2 } from 'lucide-react';
+import { Search, Eye, ExternalLink, AlertTriangle, MoreHorizontal, PackageCheck, Truck, Clock, Ban, PackageOpen, CheckCircle, Filter, ChevronDown, ChevronUp, Loader2, CheckSquare, Zap, Plus, Download, Trash2, Upload } from 'lucide-react';
+import OrderImportDialog from '@/components/admin/OrderImportDialog';
 import { formatPrice, formatDate } from '@/lib/format';
 import { useTranslation } from '@/i18n';
 
@@ -62,6 +63,7 @@ export default function AdminOrdersPage() {
   const [deliveryDialog, setDeliveryDialog] = useState(false);
   const [selectedCompanyId, setSelectedCompanyId] = useState('');
   const [exportingDelivery, setExportingDelivery] = useState(false);
+  const [importDialog, setImportDialog] = useState(false);
 
   const { data: orders } = useQuery({
     queryKey: ['admin-orders'],
@@ -297,6 +299,13 @@ export default function AdminOrdersPage() {
            </Button>
           <Button className="font-cairo gap-1.5" onClick={() => navigate('/admin/orders/create')}>
             <Plus className="w-4 h-4" /> إنشاء طلب
+          </Button>
+          <Button
+            variant="outline"
+            className="font-cairo gap-1.5"
+            onClick={() => setImportDialog(true)}
+          >
+            <Upload className="w-4 h-4" /> {t('import.uploadOrders')}
           </Button>
           <Button
             variant="outline"
@@ -686,6 +695,13 @@ export default function AdminOrdersPage() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Order Import Dialog */}
+        <OrderImportDialog
+          open={importDialog}
+          onOpenChange={setImportDialog}
+          deliveryCompanies={deliveryCompanies || []}
+        />
         
       </div>
     </TooltipProvider>
