@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Plus, Pencil, Trash2, Package, Search, Tag, CheckCircle, XCircle, Wand2 } from 'lucide-react';
 import { formatDate } from '@/lib/format';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 export default function AdminCouponsPage() {
   const { t } = useTranslation();
