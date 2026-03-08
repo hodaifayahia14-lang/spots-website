@@ -15,6 +15,7 @@ import {
   PackageCheck, AlertTriangle, Plus, Loader2, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 const RETURN_STATUSES = ['requested', 'approved', 'rejected', 'pickup_scheduled', 'in_transit', 'received', 'inspected', 'completed', 'cancelled', 'disputed'];
 
