@@ -192,7 +192,7 @@ export default function AdminClientsPage() {
         </CardContent></Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(c => {
+          {paginatedFiltered.map(c => {
             const balance = getClientBalance(c.id);
             return (
               <Card key={c.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/admin/clients/${c.id}`)}>

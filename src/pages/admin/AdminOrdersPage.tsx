@@ -266,7 +266,7 @@ export default function AdminOrdersPage() {
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <div className="relative flex-1 min-w-0">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('orders.searchPlaceholder')} className="pr-10 font-cairo h-9 sm:h-10" />
+              <Input value={search} onChange={e => { setSearch(e.target.value); setCurrentPage(1); }} placeholder={t('orders.searchPlaceholder')} className="pr-10 font-cairo h-9 sm:h-10" />
             </div>
             <div className="flex gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
