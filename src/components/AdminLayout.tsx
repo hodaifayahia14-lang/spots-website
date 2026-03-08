@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef, ReactNode, FormEvent } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { LayoutDashboard, Package, MapPin, ShoppingCart, Tag, Settings, LogOut, Menu, X, Layers, Users, UserCheck, Bell, AlertTriangle, Clock, Palette, Search, ExternalLink, User, ChevronDown, PackageX, RotateCcw, DollarSign, Globe, Store, CreditCard, Bot, FormInput, Paintbrush, Shield, Rocket, Truck, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Package, MapPin, ShoppingCart, Tag, Settings, LogOut, Menu, X, Layers, Users, UserCheck, Bell, AlertTriangle, Clock, Palette, Search, ExternalLink, User, ChevronDown, PackageX, RotateCcw, DollarSign, Globe, Store, CreditCard, Bot, FormInput, Paintbrush, Shield, Rocket, Truck, ChevronRight, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
@@ -54,6 +54,7 @@ const NAV_KEYS = [
   { href: '/admin/suppliers', key: 'sidebar.suppliers', icon: Truck },
   { href: '/admin/clients', key: 'sidebar.clients', icon: Users },
   { href: '/admin/delivery', key: 'delivery.title', icon: Truck },
+  { href: '/admin/statistics', key: 'stats.title', icon: BarChart3 },
 ];
 
 // Grouped sidebar navigation for world-class UX
@@ -80,6 +81,7 @@ const NAV_GROUPS = [
       { href: '/admin/returns', key: 'sidebar.returns', icon: RotateCcw },
       { href: '/admin/costs', key: 'sidebar.costs', icon: DollarSign },
       { href: '/admin/abandoned', key: 'sidebar.abandoned', icon: PackageX },
+      { href: '/admin/statistics', key: 'stats.title', icon: BarChart3 },
     ],
   },
   {

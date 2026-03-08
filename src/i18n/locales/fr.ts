@@ -966,6 +966,20 @@ export const fr: Record<string, string> = {
   'delivery.importSuccess': '{n} wilayas mises à jour avec succès',
   'delivery.invalidFile': 'Fichier invalide',
 
+  // ═══ Statistics ═══
+  'stats.title': 'Statistiques',
+  'stats.description': 'Analyser les performances de vente, produits et wilayas',
+  'stats.totalOrders': 'Total commandes',
+  'stats.revenue': 'Revenus',
+  'stats.delivered': 'Livrées',
+  'stats.cancelRate': "Taux d'annulation",
+  'stats.deliveryRate': 'Taux de livraison',
+  'stats.topProducts': 'Produits les plus vendus',
+  'stats.topWilayas': 'Meilleures wilayas par demande',
+  'stats.unitsSold': 'unités vendues',
+  'stats.wilaya': 'Wilaya',
+  'stats.noData': 'Pas assez de données',
+
   // ═══ Dashboard Payment Alerts ═══
   'dashboard.suppliersToPayTitle': '⚠ Fournisseurs à payer',
   'dashboard.clientsToCollectTitle': '💰 Clients qui vous doivent',
