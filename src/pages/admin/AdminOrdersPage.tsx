@@ -617,7 +617,7 @@ export default function AdminOrdersPage() {
         </div>
 
         <Dialog open={!!selectedOrder} onOpenChange={open => !open && setSelectedOrder(null)}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto mx-2 sm:mx-auto">
             <DialogHeader><DialogTitle className="font-cairo">{t('orders.orderDetails')} {selectedOrder?.order_number}</DialogTitle></DialogHeader>
             {selectedOrder && (
               <div className="space-y-4 text-sm">
