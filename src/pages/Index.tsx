@@ -145,7 +145,7 @@ export default function IndexPage() {
   const categoryCards = [
     { name: 'تمور', subtitle: 'أجود أنواع التمور الجزائرية', emoji: '🌴', gradient: 'from-amber-900/90 via-amber-800/80 to-amber-700/60', decorEmoji: '✨', iconBg: 'bg-amber-500/20', count: allProducts?.filter(p => p.category?.includes('تمور')).length || 0 },
     { name: 'عسل', subtitle: 'عسل طبيعي خام من الجبال', emoji: '🍯', gradient: 'from-yellow-900/90 via-yellow-800/80 to-yellow-600/60', decorEmoji: '🐝', iconBg: 'bg-yellow-500/20', count: allProducts?.filter(p => p.category?.includes('عسل')).length || 0 },
-    { name: 'هدايا وتشكيلات', subtitle: 'علب هدايا فاخرة للمناسبات', emoji: '🎁', gradient: 'from-emerald-900/90 via-emerald-800/80 to-emerald-700/60', decorEmoji: '🎀', iconBg: 'bg-emerald-500/20', count: allProducts?.filter(p => p.category?.includes('هدايا وتشكيلات') || p.category?.includes('هدايا')).length || 0 },
+    { name: 'هدايا وتشكيلات', subtitle: 'علب هدايا فاخرة للمناسبات', emoji: '🎁', gradient: 'from-amber-950/90 via-amber-900/80 to-yellow-800/60', decorEmoji: '🎀', iconBg: 'bg-yellow-500/20', count: allProducts?.filter(p => p.category?.includes('هدايا وتشكيلات') || p.category?.includes('هدايا')).length || 0 },
     { name: 'مشتقات', subtitle: 'دبس التمر ومنتجات طبيعية', emoji: '🫙', gradient: 'from-orange-900/90 via-orange-800/80 to-orange-700/60', decorEmoji: '🌿', iconBg: 'bg-orange-500/20', count: allProducts?.filter(p => p.category?.includes('مشتقات')).length || 0 },
   ];
 
