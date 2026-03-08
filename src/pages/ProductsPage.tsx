@@ -198,8 +198,8 @@ export default function ProductsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-cairo font-black text-3xl md:text-4xl bg-gradient-to-l from-foreground to-foreground/80 bg-clip-text">المنتجات</h1>
-          <p className="font-cairo text-sm text-muted-foreground mt-1">اكتشف تشكيلتنا المميزة</p>
+          <h1 className="font-cairo font-black text-3xl md:text-4xl bg-gradient-to-l from-foreground to-foreground/80 bg-clip-text">المنتجات الرياضية</h1>
+          <p className="font-cairo text-sm text-muted-foreground mt-1">اكتشف أفضل المعدات والملابس الرياضية</p>
         </div>
         {/* Mobile filter trigger */}
         <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
