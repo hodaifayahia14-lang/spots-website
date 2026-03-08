@@ -54,6 +54,7 @@ const NAV_KEYS = [
   { href: '/admin/suppliers', key: 'sidebar.suppliers', icon: Truck },
   { href: '/admin/clients', key: 'sidebar.clients', icon: Users },
   { href: '/admin/delivery', key: 'delivery.title', icon: Truck },
+  { href: '/admin/statistics', key: 'stats.title', icon: BarChart3 },
 ];
 
 // Grouped sidebar navigation for world-class UX
