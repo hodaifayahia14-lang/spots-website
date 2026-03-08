@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Truck, Plus, Pencil, Trash2, Wifi, WifiOff } from 'lucide-react';
 import { toast } from 'sonner';
+import DeliveryCompanyPricing from '@/components/admin/delivery/DeliveryCompanyPricing';
 
 interface DeliveryCompany {
   id: string;
