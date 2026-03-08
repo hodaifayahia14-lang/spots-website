@@ -1,39 +1,66 @@
 
 
-# Fix: Send Orders to Delivery Company via API (Not CSV Download)
+## Database Seeding Plan
 
-## Problem
-Currently, clicking "Push to Delivery" always downloads a CSV file. The user wants it to **send orders directly to the delivery company's API**. CSV should only be a fallback when no API is configured.
+### Goal
+Create an edge function `seed-database` that populates all tables with realistic Algerian e-commerce data, including AI-generated product images.
 
-## Changes
+### What Gets Seeded
 
-### 1. `src/pages/admin/AdminOrdersPage.tsx` -- Fix `handleExportToDelivery`
+| Table | Records | Details |
+|-------|---------|---------|
+| `products` | 15 | Diverse categories (electronics, fashion, food, beauty, home). With AI-generated images via Lovable AI gateway |
+| `product_variants` | ~20 | Size/color variants for applicable products |
+| `product_variations` | ~10 | Legacy variation entries |
+| `variation_options` | ~15 | Size, color options |
+| `categories` (via products) | 8 | Electronics, Fashion, Food, Beauty, Home, Sports, Books, Accessories |
+| `orders` | 30 | Mixed statuses (جديد, مؤكد, تم التسليم, ملغي, قيد التوصيل) with realistic dates |
+| `order_items` | ~50 | Linked to products and orders |
+| `clients` | 15 | Algerian names, phones, wilayas |
+| `suppliers` | 5 | With contact info |
+| `supplier_products` | 15 | Linked to suppliers |
+| `supplier_transactions` | 10 | Receipt/payment records |
+| `confirmers` | 3 | Active confirmers |
+| `coupons` | 5 | Various discount types |
+| `reviews` | 20 | Ratings 3-5, Arabic comments |
+| `leads` | 10 | Mixed statuses |
+| `delivery_companies` | 2 more | (ZR Express, Yalidine already exists) |
+| `delivery_company_prices` | Prices for existing wilayas per company |
+| `facebook_pixels` | 2 | Sample pixel IDs |
+| `abandoned_orders` | 5 | Abandoned carts |
+| `return_requests` + `return_items` | 3 | Sample returns |
+| `return_reasons` | 5 | Common return reasons |
+| `return_settings` | 1 | Default config |
+| `product_costs` | 10 | Cost breakdown per product |
+| `settings` | 5 | Store name, logo, theme settings |
 
-Update the handler logic (lines 98-130):
-- If the delivery company has an API configured and the API call succeeds, show a success toast -- NO CSV download
-- If the API call fails, show an error toast with the failure message
-- Only download CSV as fallback when the company has NO API key/URL configured
-- Change the button icon from `Download` to `Truck` (send icon) to reflect the action
-- Update button text to indicate "send" not "export"
+### Implementation
 
-### 2. `supabase/functions/delivery-export/index.ts` -- Improve API response
+**1. Edge Function: `supabase/functions/seed-database/index.ts`**
+- Single POST endpoint, admin-only (checks auth)
+- Inserts data in dependency order: settings → products → variants → clients → orders → order_items → reviews → suppliers → etc.
+- For product images: calls the Lovable AI gateway (`google/gemini-2.5-flash-image`) to generate product photos, uploads to `products` storage bucket
+- Uses service role key for unrestricted inserts
+- Returns summary of seeded records
 
-The edge function already handles API calls correctly. Minor improvement:
-- When API is configured, include the API response body in `apiResult` for better error reporting
-- Still return CSV in the response for fallback use, but the frontend will decide whether to download it
+**2. Admin UI: Seed button in Settings page**
+- Add a "Seed Database" button in `AdminSettingsPage.tsx` or a dev tools section
+- Shows confirmation dialog before seeding
+- Progress indicator during seeding
+- Prevents double-seeding by checking if data already exists
 
-### 3. Dialog UX improvements in `AdminOrdersPage.tsx`
+### Data Characteristics
+- All customer/product names in Arabic
+- Phone numbers in Algerian format (05xxxxxxxx, 06xxxxxxxx, 07xxxxxxxx)
+- Prices in DZD (realistic: 500-15000 DA range)
+- Orders spread across last 90 days
+- Stock levels: 0-100 per product
+- Wilayas reference existing wilaya IDs from database
 
-- Show which companies have API configured (green dot already exists)
-- Add a note in the dialog: "Orders will be sent directly to the company" when API is configured, or "CSV will be downloaded" when not
-- Show a success summary after push (e.g., "15 orders sent to Yalidine successfully")
-
-## Technical Summary
-
-| File | Change |
-|------|--------|
-| `src/pages/admin/AdminOrdersPage.tsx` | Prioritize API push over CSV download in `handleExportToDelivery`; update icons and labels |
-| `supabase/functions/delivery-export/index.ts` | Include API response body for better error messages |
-
-No database changes needed.
+### Technical Details
+- Edge function uses `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS
+- Image generation uses `LOVABLE_API_KEY` with `google/gemini-2.5-flash-image` model
+- Products get 1-2 AI-generated images each
+- Order numbers generated via existing trigger
+- Stock adjusted based on delivered orders
 
