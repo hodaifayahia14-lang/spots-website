@@ -16,7 +16,7 @@ export default {
       fontFamily: {
         cairo: ["Cairo", "sans-serif"],
         roboto: ["Roboto", "sans-serif"],
-        playfair: ["Playfair Display", "serif"],
+        bebas: ["Bebas Neue", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -101,20 +101,6 @@ export default {
           "50%": { backgroundPosition: "100% 50%" },
           "100%": { backgroundPosition: "0% 50%" },
         },
-        "blob-morph": {
-          "0%, 100%": { d: "path('M300,520C390,520,480,480,530,400C580,320,580,220,530,150C480,80,390,40,300,40C210,40,120,80,70,150C20,220,20,320,70,400C120,480,210,520,300,520Z')" },
-          "25%": { d: "path('M320,510C400,510,470,460,520,380C570,300,560,200,510,130C460,60,370,30,290,40C210,50,130,100,80,180C30,260,40,360,90,420C140,480,240,510,320,510Z')" },
-          "50%": { d: "path('M280,530C370,530,460,490,520,420C580,350,590,250,540,170C490,90,400,50,310,40C220,30,130,70,70,150C10,230,10,340,60,410C110,480,190,530,280,530Z')" },
-          "75%": { d: "path('M310,515C395,515,475,475,525,395C575,315,575,215,525,145C475,75,395,35,310,35C225,35,140,75,85,145C30,215,25,315,75,395C125,475,225,515,310,515Z')" },
-        },
-        "gradient-shimmer": {
-          "0%": { backgroundPosition: "0% center" },
-          "100%": { backgroundPosition: "200% center" },
-        },
-        "golden-shimmer": {
-          "0%": { backgroundPosition: "-200% center" },
-          "100%": { backgroundPosition: "200% center" },
-        },
         "shake": {
           "0%, 100%": { transform: "translateX(0)" },
           "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-4px)" },
@@ -129,6 +115,10 @@ export default {
           from: { opacity: "0", transform: "translateY(100%)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        "pulse-ring": {
+          "0%": { transform: "scale(0.8)", opacity: "1" },
+          "100%": { transform: "scale(2.5)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -138,12 +128,10 @@ export default {
         "float": "float 3s ease-in-out infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         "gradient-shift": "gradient-shift 6s ease infinite",
-        "blob-morph": "blob-morph 8s ease-in-out infinite",
-        "gradient-shimmer": "gradient-shimmer 4s ease infinite",
-        "golden-shimmer": "golden-shimmer 3s ease infinite",
         "shake": "shake 0.5s ease-in-out",
         "check-pulse": "check-pulse 0.4s ease-out forwards",
         "slide-up": "slide-up 0.3s ease-out",
+        "pulse-ring": "pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite",
       },
     },
   },

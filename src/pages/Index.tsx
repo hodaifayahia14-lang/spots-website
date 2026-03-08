@@ -4,32 +4,23 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { Home, Sparkles, Watch, ArrowLeft, ShoppingBag, Gift, Star, Heart, Shirt,
-  Laptop, Smartphone, Car, Utensils, Baby, Headphones, Camera, Sofa, Dumbbell, Palette,
-  Book, Gem, Zap, Flame, Leaf, Music, Plane, Pizza, Coffee, Glasses, Footprints, Dog,
-  Wrench, Gamepad2, Crown, Flower2, Bike, Briefcase, Stethoscope,
-  Truck, Shield, Clock, HeadphonesIcon, BadgeCheck, MapPin, CreditCard,
-  ChevronLeft, Search, TrendingUp, Award, Droplets, Package, CheckCircle,
-  ArrowDown, Eye, Sparkle, Timer, ThumbsUp,
-  type LucideIcon } from 'lucide-react';
+import {
+  ArrowLeft, ShoppingBag, Star, Truck, Shield, Headphones, Zap, Dumbbell,
+  ChevronLeft, Search, TrendingUp, Award, Package, Timer, BadgeCheck,
+  Target, Trophy, Flame, Heart,
+  type LucideIcon,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ProductCard from '@/components/ProductCard';
 import { ProductGridSkeleton } from '@/components/LoadingSkeleton';
 import { useCategories } from '@/hooks/useCategories';
-import heroImage from '@/assets/hero-dates-honey.jpg';
+import heroSportsImage from '@/assets/hero-sports.jpg';
 import AnimatedSection from '@/components/AnimatedSection';
 import MinimalTemplate from '@/components/templates/MinimalTemplate';
 import BoldTemplate from '@/components/templates/BoldTemplate';
 import LiquidTemplate from '@/components/templates/LiquidTemplate';
 import DigitalTemplate from '@/components/templates/DigitalTemplate';
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  Home, Sparkles, Watch, ShoppingBag, Gift, Star, Heart, Shirt,
-  Laptop, Smartphone, Car, Utensils, Baby, Headphones, Camera, Sofa, Dumbbell, Palette,
-  Book, Gem, Zap, Flame, Leaf, Music, Plane, Pizza, Coffee, Glasses, Footprints, Dog,
-  Wrench, Gamepad2, Crown, Flower2, Bike, Briefcase, Stethoscope,
-};
 
 function AnimatedCounter({ target }: { target: number }) {
   const [count, setCount] = useState(0);
@@ -41,16 +32,15 @@ function AnimatedCounter({ target }: { target: number }) {
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !hasAnimated.current) {
         hasAnimated.current = true;
-        let frame: number;
         const duration = 1800;
         const start = performance.now();
         const easeOutQuart = (x: number): number => 1 - Math.pow(1 - x, 4);
         const step = (now: number) => {
           const progress = Math.min((now - start) / duration, 1);
           setCount(Math.floor(easeOutQuart(progress) * target));
-          if (progress < 1) frame = requestAnimationFrame(step);
+          if (progress < 1) requestAnimationFrame(step);
         };
-        frame = requestAnimationFrame(step);
+        requestAnimationFrame(step);
       }
     }, { threshold: 0.5 });
     observer.observe(ref.current);
@@ -59,7 +49,6 @@ function AnimatedCounter({ target }: { target: number }) {
   return <span ref={ref}>{count}</span>;
 }
 
-/* Parallax scroll hook for hero */
 function useParallax() {
   const [offset, setOffset] = useState(0);
   useEffect(() => {
@@ -122,9 +111,7 @@ export default function IndexPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-    }
+    if (searchQuery.trim()) navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
   };
 
   // Template routing
@@ -135,18 +122,20 @@ export default function IndexPage() {
 
   const scrollY = useParallax();
 
-  const trustItems = [
-    { icon: Droplets, label: 'عسل طبيعي 100%', desc: 'بدون إضافات', color: 'from-amber-500 to-yellow-500' },
-    { icon: Truck, label: 'توصيل سريع', desc: 'لجميع الولايات', color: 'from-amber-600 to-orange-500' },
-    { icon: Shield, label: 'جودة معتمدة', desc: 'منتجات مختارة', color: 'from-amber-500 to-yellow-500' },
-    { icon: Leaf, label: 'بدون مواد حافظة', desc: '100% طبيعي', color: 'from-yellow-600 to-amber-500' },
+  const sportCategories = [
+    { name: 'كرة القدم', emoji: '⚽', gradient: 'from-emerald-600 to-green-700', iconBg: 'bg-emerald-500/20' },
+    { name: 'كرة السلة', emoji: '🏀', gradient: 'from-orange-600 to-amber-600', iconBg: 'bg-orange-500/20' },
+    { name: 'لياقة بدنية', emoji: '💪', gradient: 'from-blue-600 to-indigo-700', iconBg: 'bg-blue-500/20' },
+    { name: 'جري', emoji: '🏃', gradient: 'from-violet-600 to-purple-700', iconBg: 'bg-violet-500/20' },
+    { name: 'تنس', emoji: '🎾', gradient: 'from-lime-600 to-green-600', iconBg: 'bg-lime-500/20' },
+    { name: 'سباحة', emoji: '🏊', gradient: 'from-cyan-600 to-blue-600', iconBg: 'bg-cyan-500/20' },
   ];
 
-  const categoryCards = [
-    { name: 'تمور', subtitle: 'أجود أنواع التمور الجزائرية', emoji: '🌴', gradient: 'from-amber-900/90 via-amber-800/80 to-amber-700/60', decorEmoji: '✨', iconBg: 'bg-amber-500/20', count: allProducts?.filter(p => p.category?.includes('تمور')).length || 0 },
-    { name: 'عسل', subtitle: 'عسل طبيعي خام من الجبال', emoji: '🍯', gradient: 'from-yellow-900/90 via-yellow-800/80 to-yellow-600/60', decorEmoji: '🐝', iconBg: 'bg-yellow-500/20', count: allProducts?.filter(p => p.category?.includes('عسل')).length || 0 },
-    { name: 'هدايا وتشكيلات', subtitle: 'علب هدايا فاخرة للمناسبات', emoji: '🎁', gradient: 'from-amber-950/90 via-amber-900/80 to-yellow-800/60', decorEmoji: '🎀', iconBg: 'bg-yellow-500/20', count: allProducts?.filter(p => p.category?.includes('هدايا وتشكيلات') || p.category?.includes('هدايا')).length || 0 },
-    { name: 'مشتقات', subtitle: 'دبس التمر ومنتجات طبيعية', emoji: '🫙', gradient: 'from-orange-900/90 via-orange-800/80 to-orange-700/60', decorEmoji: '🌿', iconBg: 'bg-orange-500/20', count: allProducts?.filter(p => p.category?.includes('مشتقات')).length || 0 },
+  const trustItems = [
+    { icon: Truck, label: 'شحن سريع', desc: 'لجميع الولايات', color: 'from-primary to-emerald-600' },
+    { icon: Shield, label: 'ضمان الجودة', desc: 'منتجات أصلية 100%', color: 'from-secondary to-blue-600' },
+    { icon: Award, label: 'علامات عالمية', desc: 'أفضل الماركات', color: 'from-accent to-amber-500' },
+    { icon: Headphones, label: 'دعم متواصل', desc: 'خدمة عملاء 24/7', color: 'from-violet-500 to-purple-600' },
   ];
 
   const renderProductGrid = (products: typeof newestProducts, columns?: string) => (
@@ -173,7 +162,7 @@ export default function IndexPage() {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
 
-      {/* ─── Hero Section ─── */}
+      {/* ─── HERO SECTION ─── */}
       {heroSlides && heroSlides.length > 0 ? (
         <section className="relative isolate overflow-hidden" ref={emblaRef}>
           <div className="flex">
@@ -191,89 +180,89 @@ export default function IndexPage() {
           </div>
         </section>
       ) : (
-        <section className="relative isolate overflow-hidden min-h-[85vh] sm:min-h-[90vh] flex items-center grain-texture">
-          {/* Parallax background image */}
+        <section className="relative isolate overflow-hidden min-h-[90vh] flex items-center">
+          {/* Parallax BG */}
           <div className="absolute inset-0" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
-            <img src={heroImage} alt="" aria-hidden className="w-full h-[120%] object-cover" />
+            <img src={heroSportsImage} alt="" aria-hidden className="w-full h-[120%] object-cover" />
           </div>
-          {/* Multi-layer gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1C1005]/95 via-[#1C1005]/75 to-[#1C1005]/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1005]/80 via-transparent to-transparent" />
+          {/* Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1a]/95 via-[#0a0f1a]/70 to-[#0a0f1a]/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a]/80 via-transparent to-transparent" />
 
-          {/* Floating decorative particles */}
+          {/* Decorative speed lines */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="absolute rounded-full opacity-20 animate-pulse"
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="absolute h-[2px] opacity-10 animate-pulse"
                 style={{
-                  width: `${8 + i * 4}px`, height: `${8 + i * 4}px`,
-                  background: 'radial-gradient(circle, hsl(40,96%,50%), transparent)',
-                  top: `${15 + i * 14}%`, left: `${10 + i * 15}%`,
-                  animationDelay: `${i * 0.7}s`, animationDuration: `${3 + i}s`,
+                  width: `${100 + i * 60}px`,
+                  background: `linear-gradient(90deg, transparent, hsl(145 80% 48%), transparent)`,
+                  top: `${20 + i * 15}%`,
+                  right: `${5 + i * 10}%`,
+                  animationDelay: `${i * 0.5}s`,
+                  transform: 'rotate(-5deg)',
                 }}
               />
             ))}
           </div>
 
-          <div className="container relative z-10 py-24 md:py-32 lg:py-40 flex justify-center">
-            <div className="max-w-3xl text-center space-y-8">
-              {/* Floating badge with glow */}
+          <div className="container relative z-10 py-24 md:py-32 lg:py-40">
+            <div className="max-w-3xl space-y-8">
+              {/* Badge */}
               <div className="animate-fade-in">
-                <span className="inline-flex items-center gap-2.5 font-cairo text-sm font-semibold tracking-wide text-amber-100 bg-amber-900/40 backdrop-blur-md rounded-full px-6 py-2.5 border border-amber-400/20 shadow-lg shadow-amber-500/10">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 animate-ping" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
-                  </span>
-                  🌿 100% طبيعي — Natural & Pure
+                <span className="inline-flex items-center gap-2.5 font-cairo text-sm font-bold tracking-wide bg-primary/20 text-primary backdrop-blur-md rounded-full px-6 py-2.5 border border-primary/30">
+                  <Zap className="w-4 h-4" />
+                  🏆 أفضل متجر رياضي في الجزائر
                 </span>
               </div>
 
-              <h1 className="font-cairo font-black text-4xl sm:text-5xl lg:text-7xl text-amber-50 leading-[1.1] tracking-tight animate-fade-in" style={{ animationDelay: '0.15s' }}>
-                أجود <span className="text-transparent bg-clip-text bg-gradient-to-l from-secondary via-amber-400 to-secondary">التمور</span> والعسل الطبيعي
+              <h1 className="font-cairo font-black text-4xl sm:text-5xl lg:text-7xl leading-[1.1] tracking-tight animate-fade-in" style={{ animationDelay: '0.15s' }}>
+                <span className="text-white">جهّز نفسك</span>
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-l from-primary via-emerald-400 to-primary neon-glow">للتحدي القادم</span>
               </h1>
 
-              {/* Golden decorative line with glow */}
-              <div className="flex items-center justify-center gap-3 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-secondary/60" />
-                <Sparkle className="w-4 h-4 text-secondary animate-pulse" />
-                <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-secondary/60" />
-              </div>
-
-              <p className="font-playfair text-amber-200/80 text-lg sm:text-xl lg:text-2xl leading-relaxed max-w-xl mx-auto animate-fade-in italic" style={{ animationDelay: '0.25s' }}>
-                The finest dates & natural honey — crafted by nature
+              <p className="font-cairo text-white/60 text-lg sm:text-xl lg:text-2xl leading-relaxed max-w-xl animate-fade-in" style={{ animationDelay: '0.25s' }}>
+                أحذية رياضية، معدات تدريب، ملابس رياضية — كل ما تحتاجه لتكون بطلاً
               </p>
 
+              {/* Search */}
+              <form onSubmit={handleSearch} className="flex gap-2 max-w-lg animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                <div className="relative flex-1">
+                  <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder="ابحث عن معدات رياضية..."
+                    className="pr-12 font-cairo bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/40 rounded-2xl h-14 text-base focus:bg-white/15 focus:border-primary/50"
+                  />
+                </div>
+                <Button type="submit" size="lg" className="font-cairo font-bold rounded-2xl h-14 px-8 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30">بحث</Button>
+              </form>
+
               {/* CTA Buttons */}
-              <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-fade-in" style={{ animationDelay: '0.35s' }}>
+              <div className="flex flex-wrap items-center gap-4 pt-2 animate-fade-in" style={{ animationDelay: '0.4s' }}>
                 <Link to="/products">
-                  <Button size="lg" className="font-cairo font-bold text-base sm:text-lg px-10 h-14 gap-2.5 rounded-2xl shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 hover:scale-[1.03] transition-all duration-300 bg-primary hover:bg-primary/90 group">
+                  <Button size="lg" className="font-cairo font-bold text-base sm:text-lg px-10 h-14 gap-2.5 rounded-2xl shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 bg-primary hover:bg-primary/90 group">
                     تسوّق الآن
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link to="/products">
-                  <Button size="lg" variant="outline" className="font-cairo font-semibold text-base sm:text-lg px-10 h-14 rounded-2xl border-amber-300/30 text-amber-100 hover:bg-amber-100/10 hover:text-amber-50 hover:border-amber-300/50 backdrop-blur-md bg-white/5 transition-all duration-300">
-                    اكتشف المنتجات
+                  <Button size="lg" variant="outline" className="font-cairo font-semibold text-base sm:text-lg px-10 h-14 rounded-2xl border-white/20 text-white hover:bg-white/10 hover:border-white/40 backdrop-blur-md bg-white/5 transition-all duration-300">
+                    عروض اليوم 🔥
                   </Button>
                 </Link>
-              </div>
-
-              {/* Scroll indicator */}
-              <div className="pt-8 animate-fade-in flex justify-center" style={{ animationDelay: '0.5s' }}>
-                <div className="flex flex-col items-center gap-2 opacity-60 animate-bounce" style={{ animationDuration: '2s' }}>
-                  <span className="font-cairo text-xs text-amber-200/60">اكتشف المزيد</span>
-                  <ArrowDown className="w-4 h-4 text-amber-200/60" />
-                </div>
               </div>
             </div>
           </div>
         </section>
       )}
 
-      {/* ─── Trust Bar — with hover animations and gradient icons ─── */}
+      {/* ─── TRUST BAR ─── */}
       <AnimatedSection>
-        <section className="border-b bg-gradient-to-b from-card to-background relative -mt-6 z-20">
-          <div className="container py-0">
-            <div className="bg-card/90 backdrop-blur-xl border border-border/50 rounded-3xl shadow-xl shadow-black/5 p-6 md:p-8 -mt-6">
+        <section className="relative -mt-8 z-20">
+          <div className="container">
+            <div className="bg-card/95 backdrop-blur-xl border border-border/50 rounded-3xl shadow-xl shadow-black/5 p-6 md:p-8">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {trustItems.map((item, i) => (
                   <div key={i} className="flex items-center gap-4 group cursor-default p-3 rounded-2xl hover:bg-primary/5 transition-all duration-300">
@@ -292,65 +281,46 @@ export default function IndexPage() {
         </section>
       </AnimatedSection>
 
-      {/* ─── Featured Categories — Premium Bento Grid ─── */}
-      <section className="py-20 md:py-28">
+      {/* ─── SPORT CATEGORIES ─── */}
+      <section className="py-16 md:py-24">
         <div className="container">
           <AnimatedSection>
-            <div className="text-center mb-14">
-              <span className="font-cairo text-sm font-bold text-primary bg-primary/10 rounded-full px-5 py-2 inline-block mb-4">تصنيفاتنا</span>
-              <SectionHeader title="تصفح حسب الفئة" subtitle="اختر الفئة المناسبة واستمتع بتجربة تسوق فريدة" center />
+            <div className="text-center mb-12">
+              <span className="font-cairo text-sm font-bold text-primary bg-primary/10 rounded-full px-5 py-2 inline-block mb-4">
+                <Target className="w-4 h-4 inline -mt-0.5 ml-1" />
+                تصنيفات رياضية
+              </span>
+              <h2 className="font-cairo font-black text-3xl md:text-4xl text-foreground">اختر رياضتك المفضلة</h2>
+              <p className="font-cairo text-muted-foreground mt-2 text-sm md:text-base">معدات احترافية لكل أنواع الرياضة</p>
             </div>
           </AnimatedSection>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mt-10">
-            {categoryCards.map((cat, i) => (
-              <AnimatedSection key={cat.name} delay={i * 100}>
-                <Link to={`/products?category=${encodeURIComponent(cat.name)}`}>
-                  <div className={`relative rounded-3xl overflow-hidden group cursor-pointer border border-border/50 hover:border-secondary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 ${i === 0 ? 'lg:col-span-1 h-72 sm:h-80' : 'h-72 sm:h-80'}`}>
-                    {/* Background gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-t ${cat.gradient}`} />
-                    {/* Animated shimmer */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms]" />
-                    {/* Decorative circles */}
-                    <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/5 rounded-full blur-sm group-hover:scale-150 transition-transform duration-700" />
-                    <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-white/5 rounded-full blur-sm" />
-                    
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 z-10">
-                      {/* Floating decor */}
-                      <span className="absolute top-4 left-4 text-xl opacity-20 group-hover:opacity-50 group-hover:rotate-12 transition-all duration-500">{cat.decorEmoji}</span>
-                      <span className="absolute bottom-4 right-4 text-lg opacity-15 group-hover:opacity-40 transition-opacity duration-500">{cat.decorEmoji}</span>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {(categoriesData && categoriesData.length > 0 ? categoriesData : sportCategories).slice(0, 6).map((cat, i) => {
+              const sportCat = sportCategories[i] || sportCategories[0];
+              const catName = 'name' in cat ? cat.name : '';
+              return (
+                <AnimatedSection key={catName} delay={i * 80}>
+                  <Link to={`/products?category=${encodeURIComponent(catName)}`}>
+                    <div className={`relative rounded-3xl overflow-hidden group cursor-pointer bg-gradient-to-br ${sportCat.gradient} p-6 text-center hover:shadow-2xl hover:scale-[1.04] transition-all duration-400 min-h-[160px] flex flex-col items-center justify-center`}>
+                      {/* Shimmer on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms]" />
+                      <div className="absolute -top-4 -right-4 w-20 h-20 bg-white/5 rounded-full blur-sm group-hover:scale-150 transition-transform duration-700" />
                       
-                      {/* Icon container */}
-                      <div className={`w-20 h-20 rounded-3xl ${cat.iconBg} backdrop-blur-sm flex items-center justify-center mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500 border border-white/10 shadow-xl`}>
-                        <span className="text-4xl drop-shadow-lg">{cat.emoji}</span>
+                      <div className={`w-16 h-16 rounded-2xl ${sportCat.iconBg} backdrop-blur-sm flex items-center justify-center mb-3 group-hover:scale-110 group-hover:-rotate-6 transition-all duration-400 border border-white/10`}>
+                        <span className="text-3xl">{sportCat.emoji}</span>
                       </div>
-                      
-                      <h3 className="font-cairo font-extrabold text-xl sm:text-2xl text-amber-50 mb-1.5 tracking-tight">{cat.name}</h3>
-                      <p className="font-cairo text-xs sm:text-sm text-amber-200/60 max-w-[180px] leading-relaxed">{cat.subtitle}</p>
-                      
-                      {/* Product count badge */}
-                      {cat.count > 0 && (
-                        <span className="mt-3 font-cairo text-[11px] text-amber-100/80 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 border border-white/10">
-                          {cat.count} منتج
-                        </span>
-                      )}
-                      
-                      {/* Hover CTA */}
-                      <div className="mt-4 opacity-0 group-hover:opacity-100 transform translate-y-3 group-hover:translate-y-0 transition-all duration-300">
-                        <span className="font-cairo text-xs text-amber-100 bg-white/15 backdrop-blur-sm rounded-full px-5 py-2 border border-white/20 inline-flex items-center gap-1.5 shadow-lg">
-                          تصفح الآن
-                          <ChevronLeft className="w-3.5 h-3.5" />
-                        </span>
-                      </div>
+                      <h3 className="font-cairo font-bold text-sm text-white relative z-10">{catName}</h3>
                     </div>
-                  </div>
-                </Link>
-              </AnimatedSection>
-            ))}
+                  </Link>
+                </AnimatedSection>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ─── Bestsellers — enhanced header ─── */}
+      {/* ─── NEWEST PRODUCTS ─── */}
       <section className="py-16 md:py-24 bg-muted/30 relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,hsl(var(--primary)/0.05),transparent)]" />
         <div className="container relative">
@@ -358,12 +328,12 @@ export default function IndexPage() {
             <div className="flex items-end justify-between gap-4 mb-10">
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-md shadow-primary/20">
-                    <TrendingUp className="w-4 h-4 text-white" />
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-md shadow-primary/20">
+                    <Flame className="w-4 h-4 text-white" />
                   </div>
-                  <span className="font-cairo text-xs font-bold text-primary bg-primary/10 rounded-full px-3 py-1">الأكثر طلباً</span>
+                  <span className="font-cairo text-xs font-bold text-primary bg-primary/10 rounded-full px-3 py-1">جديد</span>
                 </div>
-                <SectionHeader title="الأكثر مبيعاً" subtitle="أفضل منتجاتنا المختارة بعناية لكم" />
+                <SectionHeader title="أحدث المنتجات" subtitle="آخر ما وصل من المعدات الرياضية" />
                 <div className="h-[3px] w-20 bg-gradient-to-l from-primary to-secondary rounded-full mt-3" />
               </div>
               <Link to="/products" className="shrink-0">
@@ -386,32 +356,31 @@ export default function IndexPage() {
         </div>
       </section>
 
-      {/* ─── Brand Story Section — with floating accents ─── */}
+      {/* ─── BRAND STORY / STATS ─── */}
       <section className="py-24 md:py-32 relative overflow-hidden">
-        {/* Decorative Background Blobs */}
         <div className="absolute top-20 -right-32 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 -left-32 w-64 h-64 bg-secondary/5 rounded-full blur-3xl" />
         <div className="container relative">
           <AnimatedSection>
             <div className="grid md:grid-cols-2 gap-16 items-center">
               <div className="space-y-8 order-2 md:order-1">
-                <span className="font-cairo text-sm font-bold text-primary bg-primary/10 rounded-full px-5 py-2 inline-block">🌿 قصتنا</span>
+                <span className="font-cairo text-sm font-bold text-primary bg-primary/10 rounded-full px-5 py-2 inline-block">
+                  <Trophy className="w-4 h-4 inline -mt-0.5 ml-1" />
+                  لماذا نحن
+                </span>
                 <h2 className="font-cairo font-black text-3xl md:text-4xl lg:text-5xl text-foreground leading-tight">
-                  من قلب <span className="text-primary">الطبيعة</span> إلى مائدتكم
+                  المتجر الرياضي <span className="text-primary">#1</span> في الجزائر
                 </h2>
-                <blockquote className="font-playfair text-xl text-muted-foreground italic border-r-4 border-gradient-to-b from-secondary to-primary pr-5 leading-relaxed" style={{ borderImage: 'linear-gradient(to bottom, hsl(40,96%,50%), hsl(25,95%,37%)) 1' }}>
-                  "نختار لكم أجود المنتجات الطبيعية من أفضل المزارع والمناحل"
-                </blockquote>
                 <p className="font-cairo text-muted-foreground leading-relaxed text-base">
-                  نؤمن بأن الطبيعة تقدم أفضل ما يمكن لصحتكم. لذلك نختار بعناية فائقة كل منتج نقدمه لكم، 
-                  من تمور المجهول الفاخرة إلى عسل السدر الطبيعي، لنضمن لكم تجربة استثنائية بجودة لا مثيل لها.
+                  نوفر لك أفضل المعدات والملابس الرياضية من أشهر الماركات العالمية. 
+                  من أحذية الجري إلى معدات كمال الأجسام، كل ما تحتاجه لتحقيق أهدافك الرياضية.
                 </p>
-                {/* Animated counters with gradient backgrounds */}
+                {/* Stats */}
                 <div className="grid grid-cols-3 gap-4 pt-4">
                   {[
-                    { icon: '🌴', value: 50, suffix: '+', label: 'نوع من التمور', color: 'from-amber-500/10 to-amber-600/5' },
-                    { icon: '🍯', value: 20, suffix: '+', label: 'نوع من العسل', color: 'from-yellow-500/10 to-yellow-600/5' },
-                    { icon: '⭐', value: 10000, suffix: '+', label: 'عميل راضٍ', color: 'from-orange-500/10 to-orange-600/5' },
+                    { icon: '🏆', value: 500, suffix: '+', label: 'منتج رياضي', color: 'from-primary/10 to-emerald-500/5' },
+                    { icon: '⭐', value: 15000, suffix: '+', label: 'عميل راضٍ', color: 'from-secondary/10 to-blue-500/5' },
+                    { icon: '🚀', value: 48, suffix: '', label: 'ولاية تغطية', color: 'from-accent/10 to-amber-500/5' },
                   ].map((stat, i) => (
                     <div key={i} className={`text-center bg-gradient-to-br ${stat.color} border border-border/50 rounded-2xl p-5 hover:-translate-y-1 transition-all duration-300 hover:shadow-lg`}>
                       <span className="text-3xl">{stat.icon}</span>
@@ -423,62 +392,49 @@ export default function IndexPage() {
                   ))}
                 </div>
               </div>
-              {/* Image with decorative frame */}
+              {/* Image */}
               <div className="relative order-1 md:order-2">
-                <div className="rounded-3xl overflow-hidden border-2 border-secondary/20 shadow-2xl shadow-primary/15 relative group">
-                  <img src={heroImage} alt="منتجاتنا الطبيعية" className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div className="rounded-3xl overflow-hidden border-2 border-primary/20 shadow-2xl shadow-primary/15 relative group">
+                  <img src={heroSportsImage} alt="معداتنا الرياضية" className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
-                {/* Floating accent cards */}
-                <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-secondary/20 rounded-full blur-2xl" />
-                <div className="absolute -top-6 -left-6 w-36 h-36 bg-primary/10 rounded-full blur-3xl" />
-                <div className="absolute -bottom-4 left-6 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl p-3 shadow-xl animate-fade-in hidden sm:flex items-center gap-3" style={{ animationDelay: '0.5s' }}>
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                    <ThumbsUp className="w-5 h-5 text-amber-500" />
-                  </div>
-                  <div>
-                    <p className="font-cairo font-bold text-sm">+10,000</p>
-                    <p className="font-cairo text-xs text-muted-foreground">عميل سعيد</p>
-                  </div>
-                </div>
+                <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-primary/20 rounded-full blur-2xl" />
+                <div className="absolute -top-6 -left-6 w-36 h-36 bg-secondary/10 rounded-full blur-3xl" />
               </div>
             </div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* ─── Testimonials — enhanced cards ─── */}
+      {/* ─── TESTIMONIALS ─── */}
       {reviews && reviews.length > 0 && (
         <section className="py-20 md:py-28 bg-muted/30 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_120%,hsl(var(--secondary)/0.08),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_120%,hsl(var(--primary)/0.08),transparent)]" />
           <div className="container relative">
             <AnimatedSection>
               <div className="text-center mb-14">
-                <span className="font-cairo text-sm font-bold text-secondary bg-secondary/10 rounded-full px-5 py-2 inline-block mb-4">⭐ شهادات العملاء</span>
-                <SectionHeader title="ماذا يقول عملاؤنا" subtitle="آراء حقيقية من عملائنا الكرام" center />
+                <span className="font-cairo text-sm font-bold text-primary bg-primary/10 rounded-full px-5 py-2 inline-block mb-4">⭐ آراء الرياضيين</span>
+                <SectionHeader title="ماذا يقول عملاؤنا" subtitle="آراء حقيقية من رياضيين يثقون بنا" center />
               </div>
             </AnimatedSection>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
               {reviews.slice(0, 6).map((review, i) => (
                 <AnimatedSection key={review.id} delay={i * 100}>
                   <div className="bg-card border border-border/50 rounded-3xl p-7 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 relative group">
-                    {/* Quote mark */}
                     <span className="absolute top-4 left-5 text-5xl text-primary/10 font-serif leading-none">❝</span>
                     <div className="flex gap-1 mb-4" dir="ltr">
                       {[1, 2, 3, 4, 5].map(s => (
-                        <Star key={s} className={`w-4 h-4 ${s <= review.rating ? 'fill-secondary text-secondary' : 'text-muted-foreground/20'}`} />
+                        <Star key={s} className={`w-4 h-4 ${s <= review.rating ? 'fill-accent text-accent' : 'text-muted-foreground/20'}`} />
                       ))}
                     </div>
-                    <p className="font-cairo text-sm text-muted-foreground leading-relaxed mb-5 line-clamp-3 relative z-10">
-                      {review.comment}
-                    </p>
+                    <p className="font-cairo text-sm text-muted-foreground leading-relaxed mb-5 line-clamp-3 relative z-10">{review.comment}</p>
                     <div className="flex items-center gap-3 pt-4 border-t border-border/50">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-sm">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-sm">
                         <span className="font-cairo font-bold text-sm text-white">{review.reviewer_name[0]}</span>
                       </div>
                       <div>
                         <span className="font-cairo font-bold text-sm text-foreground block">{review.reviewer_name}</span>
-                        <span className="font-cairo text-xs text-muted-foreground">عميل موثق ✓</span>
+                        <span className="font-cairo text-xs text-muted-foreground">رياضي موثق ✓</span>
                       </div>
                     </div>
                   </div>
@@ -489,18 +445,18 @@ export default function IndexPage() {
         </section>
       )}
 
-      {/* ─── Premium Products ─── */}
+      {/* ─── PREMIUM PRODUCTS ─── */}
       {bestProducts.length > 0 && (
         <section className="py-16 md:py-24 relative">
           <div className="container">
             <AnimatedSection>
               <div className="flex items-end justify-between gap-4 mb-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-secondary to-amber-500 flex items-center justify-center shadow-lg shadow-secondary/20">
-                    <Crown className="w-5 h-5 text-white" />
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-accent to-amber-500 flex items-center justify-center shadow-lg shadow-accent/20">
+                    <Trophy className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <SectionHeader title="منتجات مميزة" subtitle="أفخم المنتجات في متجرنا" />
+                    <SectionHeader title="الأكثر مبيعاً" subtitle="المنتجات المفضلة لدى الرياضيين" />
                   </div>
                 </div>
                 <Link to="/products" className="shrink-0">
@@ -518,20 +474,20 @@ export default function IndexPage() {
         </section>
       )}
 
-      {/* ─── Why Choose Us — new section ─── */}
+      {/* ─── WHY CHOOSE US ─── */}
       <section className="py-20 md:py-28 bg-muted/20">
         <div className="container">
           <AnimatedSection>
             <div className="text-center mb-14">
-              <span className="font-cairo text-sm font-bold text-primary bg-primary/10 rounded-full px-5 py-2 inline-block mb-4">لماذا نحن؟</span>
-              <SectionHeader title="ما يميزنا عن غيرنا" subtitle="نقدم لكم تجربة تسوق لا مثيل لها" center />
+              <span className="font-cairo text-sm font-bold text-primary bg-primary/10 rounded-full px-5 py-2 inline-block mb-4">💎 ما يميزنا</span>
+              <SectionHeader title="لماذا يختارنا الرياضيون" subtitle="نقدم تجربة تسوق رياضية استثنائية" center />
             </div>
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: Timer, title: 'شحن سريع', desc: 'نوصل طلبك في أسرع وقت ممكن لجميع الولايات', gradient: 'from-amber-600 to-orange-600' },
-              { icon: BadgeCheck, title: 'جودة مضمونة', desc: 'جميع منتجاتنا طبيعية 100% وتخضع لفحص دقيق', gradient: 'from-yellow-600 to-amber-600' },
-              { icon: HeadphonesIcon, title: 'خدمة عملاء متميزة', desc: 'فريق دعم جاهز لمساعدتك على مدار الساعة', gradient: 'from-amber-500 to-orange-600' },
+              { icon: Timer, title: 'شحن سريع', desc: 'نوصل طلبك خلال 24-72 ساعة لجميع الولايات الـ 48', gradient: 'from-primary to-emerald-600' },
+              { icon: BadgeCheck, title: 'منتجات أصلية', desc: 'جميع منتجاتنا أصلية 100% مع ضمان من الماركات العالمية', gradient: 'from-secondary to-blue-700' },
+              { icon: Dumbbell, title: 'استشارة مجانية', desc: 'فريق رياضي متخصص لمساعدتك في اختيار المعدات المناسبة', gradient: 'from-accent to-orange-600' },
             ].map((feat, i) => (
               <AnimatedSection key={i} delay={i * 120}>
                 <div className="bg-card border border-border/50 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
@@ -547,22 +503,20 @@ export default function IndexPage() {
         </div>
       </section>
 
-      {/* ─── Newsletter CTA — premium version ─── */}
-      <section className="relative overflow-hidden grain-texture">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary/90 animated-gradient" />
-        {/* Decorative shapes */}
-        <div className="absolute top-0 left-0 w-80 h-80 bg-secondary/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-sm" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full translate-x-1/3 translate-y-1/3 blur-sm" />
+      {/* ─── CTA BANNER ─── */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-primary animated-gradient" />
+        <div className="absolute top-0 left-0 w-80 h-80 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-sm" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full translate-x-1/3 translate-y-1/3 blur-sm" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-white/5" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-white/5" />
         <div className="container relative z-10 py-20 md:py-28 text-center">
           <AnimatedSection>
-            <span className="inline-block mb-5 text-4xl">🍯</span>
+            <span className="inline-block mb-5 text-4xl">🏆</span>
             <h2 className="font-cairo font-black text-3xl md:text-4xl lg:text-5xl text-primary-foreground mb-4">
-              احصل على عروض حصرية
+              ابدأ رحلتك الرياضية اليوم
             </h2>
             <p className="font-cairo text-primary-foreground/80 text-lg mb-10 max-w-lg mx-auto leading-relaxed">
-              اكتشف مجموعتنا الواسعة من التمور والعسل الطبيعي واستفد من عروضنا الحصرية يومياً.
+              اكتشف مجموعتنا الواسعة من المعدات والملابس الرياضية واستفد من عروضنا الحصرية
             </p>
             <Link to="/products">
               <Button size="lg" variant="secondary" className="font-cairo font-bold text-lg px-12 h-14 rounded-2xl gap-2.5 shadow-xl shadow-black/20 hover:shadow-2xl hover:scale-[1.04] transition-all duration-300 group">
