@@ -215,6 +215,9 @@ export default function AdminOrdersPage() {
     });
   }, [orders, search, statusFilter, wilayaFilter, paymentFilter, dateFrom, dateTo, minTotal, maxTotal, sourceFilter]);
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   const handleQuickStatus = (orderId: string, status: string) => {
     updateStatus.mutate({ id: orderId, status });
   };
