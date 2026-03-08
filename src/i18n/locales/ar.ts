@@ -960,6 +960,15 @@ export const ar: Record<string, string> = {
   'delivery.willSendApi': 'سيتم إرسال الطلبات مباشرة إلى الشركة عبر API',
   'delivery.willDownloadCsv': 'سيتم تحميل ملف CSV (لا يوجد API مُعد)',
   'delivery.sendToDelivery': 'إرسال للتوصيل',
+  'delivery.companyPrices': 'أسعار التوصيل حسب الولاية',
+  'delivery.wilaya': 'الولاية',
+  'delivery.priceOffice': 'سعر المكتب',
+  'delivery.priceHome': 'سعر المنزل',
+  'delivery.returnPrice': 'سعر الإرجاع',
+  'delivery.exportTemplate': 'تصدير القالب',
+  'delivery.importExcel': 'استيراد من Excel',
+  'delivery.importSuccess': 'تم تحديث {n} ولاية بنجاح',
+  'delivery.invalidFile': 'ملف غير صالح',
 
   // ═══ Dashboard Payment Alerts ═══
   'dashboard.suppliersToPayTitle': '⚠ موردون بحاجة للدفع',

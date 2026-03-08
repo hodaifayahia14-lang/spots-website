@@ -372,6 +372,54 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_company_prices: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          price_home: number
+          price_office: number
+          return_price: number
+          updated_at: string
+          wilaya_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          price_home?: number
+          price_office?: number
+          return_price?: number
+          updated_at?: string
+          wilaya_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          price_home?: number
+          price_office?: number
+          return_price?: number
+          updated_at?: string
+          wilaya_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_company_prices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "delivery_company_prices_wilaya_id_fkey"
+            columns: ["wilaya_id"]
+            isOneToOne: false
+            referencedRelation: "wilayas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       facebook_pixels: {
         Row: {
           created_at: string
