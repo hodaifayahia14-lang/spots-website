@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Users, Plus, Search, Phone, MapPin, Eye, Trash2, Edit, DollarSign, Package, Wallet, Download, ArrowUpDown } from 'lucide-react';
 import { toast } from 'sonner';
+import TablePagination from '@/components/admin/TablePagination';
 
 function useAllClientTransactions() {
   return useQuery({
