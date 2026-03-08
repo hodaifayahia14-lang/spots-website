@@ -109,7 +109,6 @@ export default function AdminClientsPage() {
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
-  }, [clients, search, statusFilter, sortBy, sortDir, allTx]);
 
   const totalOwed = (clients ?? []).reduce((s, c) => s + Math.max(0, getClientBalance(c.id)), 0);
   const totalCollected = (allTx ?? [])
