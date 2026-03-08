@@ -6,6 +6,7 @@ import SupplierKPICards from '@/components/admin/suppliers/SupplierKPICards';
 import SupplierDrawer from '@/components/admin/suppliers/SupplierDrawer';
 import SupplierCard from '@/components/admin/suppliers/SupplierCard';
 import { Button } from '@/components/ui/button';
+import TablePagination from '@/components/admin/TablePagination';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
