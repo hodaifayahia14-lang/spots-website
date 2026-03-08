@@ -17,6 +17,7 @@ import {
   Layers,
 } from 'lucide-react';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
