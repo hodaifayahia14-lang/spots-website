@@ -956,6 +956,15 @@ export const en: Record<string, string> = {
   'delivery.exportNow': 'Export Now',
   'delivery.csvExported': 'Orders exported successfully ✅',
   'delivery.apiSuccess': 'Orders pushed via API successfully ✅',
+  'delivery.companyPrices': 'Delivery Prices by Wilaya',
+  'delivery.wilaya': 'Wilaya',
+  'delivery.priceOffice': 'Office Price',
+  'delivery.priceHome': 'Home Price',
+  'delivery.returnPrice': 'Return Price',
+  'delivery.exportTemplate': 'Export Template',
+  'delivery.importExcel': 'Import from Excel',
+  'delivery.importSuccess': '{n} wilayas updated successfully',
+  'delivery.invalidFile': 'Invalid file',
 
   // ═══ Dashboard Payment Alerts ═══
   'dashboard.suppliersToPayTitle': '⚠ Suppliers to Pay',
