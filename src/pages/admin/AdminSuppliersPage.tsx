@@ -102,7 +102,7 @@ export default function AdminSuppliersPage() {
           <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none ${dir === 'rtl' ? 'right-3' : 'left-3'}`} />
           <Input
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
             placeholder={t('suppliers.searchPlaceholder')}
             className={`font-cairo ${dir === 'rtl' ? 'pr-9' : 'pl-9'}`}
           />
