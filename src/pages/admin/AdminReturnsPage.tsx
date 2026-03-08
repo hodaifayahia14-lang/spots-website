@@ -276,7 +276,7 @@ export default function AdminReturnsPage() {
           <div className="p-8 text-center font-cairo text-muted-foreground">{t('common.loading')}</div>
         ) : filtered.length === 0 ? (
           <div className="bg-card border rounded-lg p-8 text-center font-cairo text-muted-foreground">{t('returns.noReturns')}</div>
-        ) : filtered.map(r => {
+        ) : paginatedFiltered.map(r => {
           const style = STATUS_STYLE[r.status] || STATUS_STYLE.requested;
           const StatusIcon = style.icon;
           return (

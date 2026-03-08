@@ -211,7 +211,7 @@ export default function AdminAbandonedPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map(a => {
+          {paginatedFiltered.map(a => {
             const statusInfo = STATUS_MAP[a.status] || STATUS_MAP.abandoned;
             const isExpanded = expandedId === a.id;
             return (

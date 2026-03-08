@@ -516,7 +516,7 @@ export default function AdminConfirmersPage() {
 
               {/* Mobile Cards */}
               <div className="md:hidden space-y-3">
-                {filteredConfirmers.map(c => (
+                {paginatedConfirmers.map(c => (
                   <div key={c.id} className={`bg-card border rounded-xl p-4 space-y-2 ${c.status === 'inactive' ? 'opacity-50' : ''}`}>
                     <div className="flex items-center justify-between">
                       <div>

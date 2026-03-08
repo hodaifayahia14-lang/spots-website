@@ -226,7 +226,7 @@ export default function AdminCouponsPage() {
 
       {/* Mobile Cards */}
       <div className="md:hidden space-y-3">
-        {filteredCoupons.map(c => {
+        {paginatedCoupons.map(c => {
           const productCount = getCouponProductCount(c.id);
           return (
             <div key={c.id} className="bg-card border rounded-xl p-4 space-y-2">
