@@ -182,10 +182,18 @@ export default function ProductsPage() {
     </div>
   );
 
+  const categoryEmojis: Record<string, string> = {
+    'تمور': '🌴',
+    'عسل': '🍯',
+    'هدايا': '🎁',
+    'هدايا وتشكيلات': '🎁',
+    'مشتقات': '🫙',
+  };
+
   return (
     <div className="container py-8 pb-24">
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-cairo font-black text-3xl md:text-4xl bg-gradient-to-l from-foreground to-foreground/80 bg-clip-text">المنتجات</h1>
           <p className="font-cairo text-sm text-muted-foreground mt-1">اكتشف تشكيلتنا المميزة</p>
@@ -211,6 +219,53 @@ export default function ProductsPage() {
           </SheetContent>
         </Sheet>
       </div>
+
+      {/* Category Boxes - Horizontal scroll */}
+      {categoryNames.length > 0 && (
+        <div className="mb-6 -mx-4 px-4">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+            {/* All categories button */}
+            <button
+              onClick={() => setSelectedCategories([])}
+              className={`shrink-0 flex items-center gap-2.5 px-5 py-3 rounded-2xl border transition-all duration-300 font-cairo font-semibold text-sm ${
+                selectedCategories.length === 0
+                  ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20'
+                  : 'bg-card border-border/50 text-foreground hover:border-primary/30 hover:bg-primary/5'
+              }`}
+            >
+              <span className="text-lg">✨</span>
+              الكل
+            </button>
+            {categoryNames.map(cat => (
+              <button
+                key={cat}
+                onClick={() => {
+                  if (selectedCategories.includes(cat)) {
+                    setSelectedCategories([]);
+                  } else {
+                    setSelectedCategories([cat]);
+                  }
+                }}
+                className={`shrink-0 flex items-center gap-2.5 px-5 py-3 rounded-2xl border transition-all duration-300 font-cairo font-semibold text-sm group ${
+                  selectedCategories.includes(cat)
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20'
+                    : 'bg-card border-border/50 text-foreground hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm'
+                }`}
+              >
+                <span className="text-lg group-hover:scale-110 transition-transform">{categoryEmojis[cat] || '📦'}</span>
+                {cat}
+                {products && (
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                    selectedCategories.includes(cat) ? 'bg-primary-foreground/20' : 'bg-muted'
+                  }`}>
+                    {products.filter(p => p.category?.includes(cat)).length}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Active filters badges */}
       {activeFilterCount > 0 && (
