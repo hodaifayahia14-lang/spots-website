@@ -65,6 +65,8 @@ export default function AdminOrdersPage() {
   const [selectedCompanyId, setSelectedCompanyId] = useState('');
   const [exportingDelivery, setExportingDelivery] = useState(false);
   const [importDialog, setImportDialog] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
 
   const { data: orders } = useQuery({
     queryKey: ['admin-orders'],
