@@ -96,6 +96,7 @@ const App = () => (
         <Sonner />
         <OfflineBanner />
         <BrowserRouter>
+          <ScrollToTopOnNavigate />
           <Routes>
             {/* Public */}
             <Route path="/" element={<PublicLayout><Index /></PublicLayout>} />
