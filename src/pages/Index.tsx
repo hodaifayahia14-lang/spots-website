@@ -411,7 +411,7 @@ export default function IndexPage() {
                   {[
                     { icon: '🌴', value: 50, suffix: '+', label: 'نوع من التمور', color: 'from-amber-500/10 to-amber-600/5' },
                     { icon: '🍯', value: 20, suffix: '+', label: 'نوع من العسل', color: 'from-yellow-500/10 to-yellow-600/5' },
-                    { icon: '⭐', value: 10000, suffix: '+', label: 'عميل راضٍ', color: 'from-emerald-500/10 to-emerald-600/5' },
+                    { icon: '⭐', value: 10000, suffix: '+', label: 'عميل راضٍ', color: 'from-orange-500/10 to-orange-600/5' },
                   ].map((stat, i) => (
                     <div key={i} className={`text-center bg-gradient-to-br ${stat.color} border border-border/50 rounded-2xl p-5 hover:-translate-y-1 transition-all duration-300 hover:shadow-lg`}>
                       <span className="text-3xl">{stat.icon}</span>
