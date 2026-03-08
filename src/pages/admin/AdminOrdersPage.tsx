@@ -695,6 +695,13 @@ export default function AdminOrdersPage() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Order Import Dialog */}
+        <OrderImportDialog
+          open={importDialog}
+          onOpenChange={setImportDialog}
+          deliveryCompanies={deliveryCompanies || []}
+        />
         
       </div>
     </TooltipProvider>
