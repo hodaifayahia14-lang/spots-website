@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef, ReactNode, FormEvent } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { LayoutDashboard, Package, MapPin, ShoppingCart, Tag, Settings, LogOut, Menu, X, Layers, Users, UserCheck, Bell, AlertTriangle, Clock, Palette, Search, ExternalLink, User, ChevronDown, PackageX, RotateCcw, DollarSign, Globe, Store, CreditCard, Bot, FormInput, Paintbrush, Shield, Rocket, Truck, ChevronRight, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Package, MapPin, ShoppingCart, Tag, Settings, LogOut, Menu, X, Layers, Users, UserCheck, Bell, AlertTriangle, Clock, Palette, Search, ExternalLink, User, ChevronDown, PackageX, RotateCcw, DollarSign, Globe, Store, CreditCard, Bot, FormInput, Paintbrush, Shield, Rocket, Truck, ChevronRight, BarChart3, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
@@ -57,56 +57,35 @@ const NAV_KEYS = [
   { href: '/admin/statistics', key: 'stats.title', icon: BarChart3 },
 ];
 
-// Grouped sidebar navigation for world-class UX
 const NAV_GROUPS = [
-  {
-    groupKey: null, // No group header for dashboard
-    items: [
-      { href: '/admin', key: 'sidebar.dashboard', icon: LayoutDashboard },
-    ],
-  },
-  {
-    groupKey: 'sidebar.catalog',
-    items: [
-      { href: '/admin/products', key: 'sidebar.products', icon: Package },
-      { href: '/admin/inventory', key: 'sidebar.inventory', icon: Layers },
-      { href: '/admin/variations', key: 'sidebar.variations', icon: Palette },
-      { href: '/admin/categories', key: 'sidebar.categories', icon: Layers },
-    ],
-  },
-  {
-    groupKey: 'sidebar.sales',
-    items: [
-      { href: '/admin/orders', key: 'sidebar.orders', icon: ShoppingCart },
-      { href: '/admin/returns', key: 'sidebar.returns', icon: RotateCcw },
-      { href: '/admin/costs', key: 'sidebar.costs', icon: DollarSign },
-      { href: '/admin/abandoned', key: 'sidebar.abandoned', icon: PackageX },
-      { href: '/admin/statistics', key: 'stats.title', icon: BarChart3 },
-    ],
-  },
-  {
-    groupKey: 'sidebar.crm',
-    items: [
-      { href: '/admin/leads', key: 'sidebar.leads', icon: Users },
-      { href: '/admin/clients', key: 'sidebar.clients', icon: Users },
-      { href: '/admin/confirmers', key: 'sidebar.confirmers', icon: UserCheck },
-      { href: '/admin/suppliers', key: 'sidebar.suppliers', icon: Truck },
-    ],
-  },
-  {
-    groupKey: 'sidebar.management',
-    items: [
-      { href: '/admin/wilayas', key: 'sidebar.wilayas', icon: MapPin },
-      { href: '/admin/coupons', key: 'sidebar.coupons', icon: Tag },
-      { href: '/admin/delivery', key: 'delivery.title', icon: Truck },
-    ],
-  },
-  {
-    groupKey: 'sidebar.marketing',
-    items: [
-      { href: '/admin/landing', key: 'sidebar.landing', icon: Rocket },
-    ],
-  },
+  { groupKey: null, items: [{ href: '/admin', key: 'sidebar.dashboard', icon: LayoutDashboard }] },
+  { groupKey: 'sidebar.catalog', items: [
+    { href: '/admin/products', key: 'sidebar.products', icon: Package },
+    { href: '/admin/inventory', key: 'sidebar.inventory', icon: Layers },
+    { href: '/admin/variations', key: 'sidebar.variations', icon: Palette },
+    { href: '/admin/categories', key: 'sidebar.categories', icon: Layers },
+  ]},
+  { groupKey: 'sidebar.sales', items: [
+    { href: '/admin/orders', key: 'sidebar.orders', icon: ShoppingCart },
+    { href: '/admin/returns', key: 'sidebar.returns', icon: RotateCcw },
+    { href: '/admin/costs', key: 'sidebar.costs', icon: DollarSign },
+    { href: '/admin/abandoned', key: 'sidebar.abandoned', icon: PackageX },
+    { href: '/admin/statistics', key: 'stats.title', icon: BarChart3 },
+  ]},
+  { groupKey: 'sidebar.crm', items: [
+    { href: '/admin/leads', key: 'sidebar.leads', icon: Users },
+    { href: '/admin/clients', key: 'sidebar.clients', icon: Users },
+    { href: '/admin/confirmers', key: 'sidebar.confirmers', icon: UserCheck },
+    { href: '/admin/suppliers', key: 'sidebar.suppliers', icon: Truck },
+  ]},
+  { groupKey: 'sidebar.management', items: [
+    { href: '/admin/wilayas', key: 'sidebar.wilayas', icon: MapPin },
+    { href: '/admin/coupons', key: 'sidebar.coupons', icon: Tag },
+    { href: '/admin/delivery', key: 'delivery.title', icon: Truck },
+  ]},
+  { groupKey: 'sidebar.marketing', items: [
+    { href: '/admin/landing', key: 'sidebar.landing', icon: Rocket },
+  ]},
 ];
 
 const SETTINGS_SUB_KEYS = [
@@ -144,7 +123,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const { data: logoUrl } = useStoreLogo();
   const sidebarNavRef = useRef<HTMLElement>(null);
 
-  // Scroll sidebar + main window to top on route change
   useEffect(() => {
     sidebarNavRef.current?.scrollTo({ top: 0, behavior: 'instant' });
     window.scrollTo(0, 0);
@@ -160,14 +138,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     return t('sidebar.daysAgo').replace('{n}', String(Math.floor(hours / 24)));
   }
 
-  // Fetch low stock products on mount
   useEffect(() => {
     const fetchLowStock = async () => {
-      const { data } = await supabase
-        .from('products')
-        .select('id, name, stock')
-        .eq('is_active', true)
-        .lte('stock', 5);
+      const { data } = await supabase.from('products').select('id, name, stock').eq('is_active', true).lte('stock', 5);
       if (data) {
         const lowStockNotifs: Notification[] = data.map(p => ({
           id: `low_stock_${p.id}`,
@@ -177,66 +150,41 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           timestamp: new Date(),
           link: '/admin/products',
         }));
-        setNotifications(prev => {
-          return [...prev.filter(n => n.type === 'order'), ...lowStockNotifs];
-        });
+        setNotifications(prev => [...prev.filter(n => n.type === 'order'), ...lowStockNotifs]);
       }
     };
     fetchLowStock();
   }, [t]);
 
-  // Fetch pending orders count
   useEffect(() => {
     const fetchPending = async () => {
-      const { count } = await supabase
-        .from('orders')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'جديد');
+      const { count } = await supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'جديد');
       setPendingOrdersCount(count ?? 0);
     };
     fetchPending();
   }, []);
 
-  // Realtime new order notifications + update pending count
   useEffect(() => {
     const channel = supabase
       .channel('new-orders')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'orders' },
-        (payload) => {
-          const order = payload.new as any;
-          const notif: Notification = {
-            id: `order_${order.id}`,
-            type: 'order',
-            title: `${t('sidebar.newOrder')} #${order.order_number}`,
-            description: order.customer_name,
-            timestamp: new Date(),
-            link: '/admin/orders',
-          };
-          setNotifications(prev => [notif, ...prev]);
-          setPendingOrdersCount(prev => prev + 1);
-          playNotificationSound();
-          toast(`${t('sidebar.newOrder')} #${order.order_number}`, {
-            description: order.customer_name,
-            action: {
-              label: t('sidebar.show'),
-              onClick: () => navigate('/admin/orders'),
-            },
-          });
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'orders' },
-        () => {
-          supabase
-            .from('orders')
-            .select('*', { count: 'exact', head: true })
-            .eq('status', 'جديد')
-            .then(({ count }) => setPendingOrdersCount(count ?? 0));
-        }
-      )
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload) => {
+        const order = payload.new as any;
+        const notif: Notification = {
+          id: `order_${order.id}`, type: 'order',
+          title: `${t('sidebar.newOrder')} #${order.order_number}`,
+          description: order.customer_name, timestamp: new Date(), link: '/admin/orders',
+        };
+        setNotifications(prev => [notif, ...prev]);
+        setPendingOrdersCount(prev => prev + 1);
+        playNotificationSound();
+        toast(`${t('sidebar.newOrder')} #${order.order_number}`, {
+          description: order.customer_name,
+          action: { label: t('sidebar.show'), onClick: () => navigate('/admin/orders') },
+        });
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, () => {
+        supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'جديد').then(({ count }) => setPendingOrdersCount(count ?? 0));
+      })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [navigate, t]);
@@ -255,59 +203,30 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     const checkAdmin = async (userId: string) => {
       try {
         const { data, error } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
-        if (error) {
-          // JWT expired or other auth error - sign out
-          await supabase.auth.signOut();
-          navigate('/admin/login');
-          return;
-        }
-        if (!data) {
-          toast.error(t('sidebar.noAccess'));
-          navigate('/');
-          return;
-        }
+        if (error) { await supabase.auth.signOut(); navigate('/admin/login'); return; }
+        if (!data) { toast.error(t('sidebar.noAccess')); navigate('/'); return; }
         setIsAdmin(true);
-      } catch {
-        await supabase.auth.signOut();
-        navigate('/admin/login');
-      }
+      } catch { await supabase.auth.signOut(); navigate('/admin/login'); }
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null);
-      if (!session?.user) {
-        setLoading(false);
-        navigate('/admin/login');
-      } else {
-        checkAdmin(session.user.id).finally(() => setLoading(false));
-      }
+      if (!session?.user) { setLoading(false); navigate('/admin/login'); }
+      else { checkAdmin(session.user.id).finally(() => setLoading(false)); }
     });
     supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        supabase.auth.signOut();
-        setLoading(false);
-        navigate('/admin/login');
-        return;
-      }
+      if (error) { supabase.auth.signOut(); setLoading(false); navigate('/admin/login'); return; }
       setUser(session?.user ?? null);
-      if (!session?.user) {
-        setLoading(false);
-        navigate('/admin/login');
-      } else {
-        checkAdmin(session.user.id).finally(() => setLoading(false));
-      }
+      if (!session?.user) { setLoading(false); navigate('/admin/login'); }
+      else { checkAdmin(session.user.id).finally(() => setLoading(false)); }
     });
     return () => subscription.unsubscribe();
   }, [navigate, t]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/admin/login');
-  };
-
+  const handleLogout = async () => { await supabase.auth.signOut(); navigate('/admin/login'); };
   const clearNotifications = () => setNotifications([]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><Skeleton className="w-32 h-8" /></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><Skeleton className="w-32 h-8" /></div>;
   if (!user || !isAdmin) return null;
 
   const currentPageLabel = NAV_KEYS.find(i => i.href === location.pathname)?.key
@@ -316,48 +235,44 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const currentLang = LANG_OPTIONS.find(l => l.value === language)!;
 
   return (
-    <div className="min-h-screen flex bg-muted" dir={dir}>
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 z-50 w-64 bg-card transform transition-transform flex flex-col
+    <div className="min-h-screen flex bg-background" dir={dir}>
+      {/* Sidebar — dark navy sports theme */}
+      <aside className={`fixed inset-y-0 z-50 w-64 bg-card border-border/50 transform transition-transform flex flex-col
         ${isRtl ? 'right-0 border-l' : 'left-0 border-r'}
         lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : isRtl ? 'translate-x-full lg:translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4 border-b border-border/50">
           <Link to="/admin" className="flex items-center gap-2">
             {logoUrl ? (
-              <img src={logoUrl} alt="DZ Store" className="w-8 h-8 rounded object-contain" />
+              <img src={logoUrl} alt="DZ Sports" className="w-8 h-8 rounded object-contain" />
             ) : (
-              <div className="w-8 h-8 rounded bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-cairo font-bold text-xs">DZ</span>
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-md shadow-primary/30">
+                <Trophy className="w-4 h-4 text-primary-foreground" />
               </div>
             )}
-            <span className="font-cairo font-bold text-lg">{t('sidebar.controlPanel')}</span>
+            <span className="font-barlow font-bold text-lg uppercase tracking-wide">{t('sidebar.controlPanel')}</span>
           </Link>
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
             <X className="w-5 h-5" />
           </Button>
         </div>
         <nav ref={sidebarNavRef} className="flex-1 overflow-y-auto p-3 space-y-1">
-          {/* Sidebar Search */}
-          <div className="relative mb-3">
+          <div className="relative mb-3 neon-focus rounded-lg">
             <Search className={`absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none ${isRtl ? 'right-2.5' : 'left-2.5'}`} />
             <Input
               value={sidebarSearch}
               onChange={e => setSidebarSearch(e.target.value)}
               placeholder={t('sidebar.searchSidebar')}
-              className={`h-8 text-xs font-cairo bg-muted/50 border-0 focus-visible:ring-1 ${isRtl ? 'pr-8' : 'pl-8'}`}
+              className={`h-8 text-xs font-cairo bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary ${isRtl ? 'pr-8' : 'pl-8'}`}
             />
           </div>
 
-          {/* Grouped Navigation */}
           {NAV_GROUPS.map((group, gi) => {
             const filteredItems = sidebarSearch
               ? group.items.filter(item => t(item.key).toLowerCase().includes(sidebarSearch.toLowerCase()))
               : group.items;
-
             if (filteredItems.length === 0) return null;
-
             const isCollapsed = !sidebarSearch && group.groupKey && collapsedGroups[group.groupKey];
 
             return (
@@ -367,57 +282,57 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     onClick={() => setCollapsedGroups(prev => ({ ...prev, [group.groupKey!]: !prev[group.groupKey!] }))}
                     className="w-full flex items-center justify-between px-2 py-1.5 mb-0.5 group/header"
                   >
-                    <span className="font-cairo text-[10px] uppercase tracking-wider text-muted-foreground/70 font-semibold">
+                    <span className="font-barlow text-[10px] uppercase tracking-widest text-muted-foreground/60 font-semibold">
                       {t(group.groupKey)}
                     </span>
                     <ChevronRight className={`w-3 h-3 text-muted-foreground/50 transition-transform ${isCollapsed ? '' : 'rotate-90'}`} />
                   </button>
                 )}
-                {!isCollapsed && filteredItems.map(item => (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg font-cairo text-sm transition-all duration-150 ${
-                      location.pathname === item.href
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    }`}
-                  >
-                    <item.icon className="w-4 h-4 shrink-0" />
-                    <span className="truncate">{t(item.key)}</span>
-                  </Link>
-                ))}
+                {!isCollapsed && filteredItems.map(item => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg font-cairo text-sm transition-all duration-150 ${
+                        isActive
+                          ? 'bg-primary/10 text-primary border-r-2 border-primary shadow-[inset_0_0_20px_hsl(var(--primary)/0.05)]'
+                          : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                      }`}
+                    >
+                      <item.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : ''}`} />
+                      <span className="truncate">{t(item.key)}</span>
+                    </Link>
+                  );
+                })}
               </div>
             );
           })}
 
-          {/* Settings link */}
           {(!sidebarSearch || t('sidebar.settings').toLowerCase().includes(sidebarSearch.toLowerCase())) && (
-            <>
-              <div className="pt-2">
-                {!sidebarSearch && (
-                  <div className="px-2 py-1.5 mb-0.5">
-                    <span className="font-cairo text-[10px] uppercase tracking-wider text-muted-foreground/70 font-semibold">
-                      {t('sidebar.settings')}
-                    </span>
-                  </div>
-                )}
-                <Link
-                  to="/admin/settings"
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg font-cairo text-sm transition-all duration-150 ${
-                    isSettingsActive ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  }`}
-                >
-                  <Settings className="w-4 h-4 shrink-0" />
-                  <span className="truncate">{t('sidebar.settings')}</span>
-                </Link>
-              </div>
-            </>
+            <div className="pt-2">
+              {!sidebarSearch && (
+                <div className="px-2 py-1.5 mb-0.5">
+                  <span className="font-barlow text-[10px] uppercase tracking-widest text-muted-foreground/60 font-semibold">
+                    {t('sidebar.settings')}
+                  </span>
+                </div>
+              )}
+              <Link
+                to="/admin/settings"
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg font-cairo text-sm transition-all duration-150 ${
+                  isSettingsActive ? 'bg-primary/10 text-primary border-r-2 border-primary' : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                }`}
+              >
+                <Settings className="w-4 h-4 shrink-0" />
+                <span className="truncate">{t('sidebar.settings')}</span>
+              </Link>
+            </div>
           )}
         </nav>
-        <div className="p-3 border-t">
+        <div className="p-3 border-t border-border/50">
           <Button variant="ghost" onClick={handleLogout} className="w-full justify-start gap-2 font-cairo text-destructive hover:text-destructive">
             <LogOut className="w-4 h-4" />
             {t('sidebar.logout')}
@@ -427,28 +342,26 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       {/* Main */}
       <div className={`flex-1 ${isRtl ? 'lg:mr-64' : 'lg:ml-64'}`}>
-        <header className="sticky top-0 z-40 bg-card border-b h-14 flex items-center px-3 sm:px-4 gap-1.5 sm:gap-2 overflow-x-auto">
+        <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-xl border-b border-border/50 h-14 flex items-center px-3 sm:px-4 gap-1.5 sm:gap-2 overflow-x-auto">
           <Button variant="ghost" size="icon" className="lg:hidden shrink-0" onClick={() => setSidebarOpen(true)}>
             <Menu className="w-5 h-5" />
           </Button>
-          <h1 className="font-cairo font-bold text-base sm:text-lg shrink-0 hidden lg:block truncate">
+          <h1 className="font-barlow font-bold text-base sm:text-lg shrink-0 hidden lg:block truncate uppercase tracking-wide">
             {currentPageLabel ? t(currentPageLabel) : t('sidebar.controlPanel')}
           </h1>
 
-          {/* Global Order Search */}
           <form onSubmit={handleHeaderSearch} className={`flex-1 max-w-xs hidden sm:flex items-center gap-1 ${isRtl ? 'mr-auto' : 'ml-auto'}`}>
-            <div className="relative w-full">
+            <div className="relative w-full neon-focus rounded-lg">
               <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none ${isRtl ? 'right-2.5' : 'left-2.5'}`} />
               <Input
                 value={headerSearch}
                 onChange={e => setHeaderSearch(e.target.value)}
                 placeholder={t('sidebar.searchOrder')}
-                className={`h-9 font-cairo text-sm ${isRtl ? 'pr-8' : 'pl-8'}`}
+                className={`h-9 font-cairo text-sm bg-muted/30 border-border/50 ${isRtl ? 'pr-8' : 'pl-8'}`}
               />
             </div>
           </form>
 
-          {/* Language Switcher */}
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="sm" className="shrink-0 gap-1.5 text-xs h-8 px-2">
@@ -456,13 +369,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 <span className="hidden sm:inline">{currentLang.flag} {currentLang.value.toUpperCase()}</span>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-40 p-1" sideOffset={8}>
+            <PopoverContent align="end" className="w-40 p-1 bg-card border-border/50" sideOffset={8}>
               {LANG_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
                   onClick={() => setLanguage(opt.value)}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${
-                    language === opt.value ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-muted'
+                    language === opt.value ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-muted/50'
                   }`}
                 >
                   <span>{opt.flag}</span>
@@ -472,7 +385,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </PopoverContent>
           </Popover>
 
-          {/* Pending Orders Badge */}
           {pendingOrdersCount > 0 && (
             <Button
               variant="outline"
@@ -485,7 +397,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </Button>
           )}
 
-          {/* Notification Bell Popover */}
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon" className="relative shrink-0">
@@ -497,8 +408,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 p-0 max-h-[420px] overflow-hidden" sideOffset={8}>
-              <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/30">
+            <PopoverContent align="end" className="w-80 p-0 max-h-[420px] overflow-hidden bg-card border-border/50" sideOffset={8}>
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
                 <h3 className="font-cairo font-bold text-sm">{t('sidebar.notifications')}</h3>
                 {notifications.length > 0 && (
                   <Button variant="ghost" size="sm" onClick={clearNotifications} className="font-cairo text-xs h-7 text-muted-foreground hover:text-foreground">
@@ -517,23 +428,18 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     <button
                       key={notif.id}
                       onClick={() => navigate(notif.link)}
-                      className={`w-full flex items-start gap-3 px-4 py-3 hover:bg-muted/50 transition-colors border-b last:border-b-0 ${isRtl ? 'text-right' : 'text-left'}`}
+                      className={`w-full flex items-start gap-3 px-4 py-3 hover:bg-muted/30 transition-colors border-b border-border/20 last:border-b-0 ${isRtl ? 'text-right' : 'text-left'}`}
                     >
                       <div className={`shrink-0 w-9 h-9 rounded-xl flex items-center justify-center mt-0.5 ${
                         notif.type === 'order' ? 'bg-primary/10' : 'bg-destructive/10'
                       }`}>
-                        {notif.type === 'order' ? (
-                          <ShoppingCart className="w-4 h-4 text-primary" />
-                        ) : (
-                          <AlertTriangle className="w-4 h-4 text-destructive" />
-                        )}
+                        {notif.type === 'order' ? <ShoppingCart className="w-4 h-4 text-primary" /> : <AlertTriangle className="w-4 h-4 text-destructive" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-cairo font-semibold text-sm text-foreground truncate">{notif.title}</p>
                         <p className="font-cairo text-xs text-muted-foreground truncate">{notif.description}</p>
                         <p className="font-cairo text-[11px] text-muted-foreground/70 mt-0.5 flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {timeAgo(notif.timestamp)}
+                          <Clock className="w-3 h-3" />{timeAgo(notif.timestamp)}
                         </p>
                       </div>
                     </button>
@@ -543,41 +449,28 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </PopoverContent>
           </Popover>
 
-          {/* User Profile Dropdown */}
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="sm" className="shrink-0 gap-1.5 font-cairo text-xs h-8">
-                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
                   <User className="w-3.5 h-3.5 text-primary" />
                 </div>
                 <span className="hidden lg:inline max-w-[120px] truncate">{user?.email?.split('@')[0]}</span>
                 <ChevronDown className="w-3 h-3 text-muted-foreground hidden lg:block" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-56 p-2" sideOffset={8}>
-              <div className="px-2 py-1.5 mb-1 border-b">
+            <PopoverContent align="end" className="w-56 p-2 bg-card border-border/50" sideOffset={8}>
+              <div className="px-2 py-1.5 mb-1 border-b border-border/30">
                 <p className="font-cairo text-xs text-muted-foreground truncate">{user?.email}</p>
               </div>
-              <button
-                onClick={() => window.open('/', '_blank')}
-                className="w-full flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted transition-colors font-cairo text-sm"
-              >
-                <ExternalLink className="w-4 h-4" />
-                {t('sidebar.viewStore')}
+              <button onClick={() => window.open('/', '_blank')} className="w-full flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted/50 transition-colors font-cairo text-sm">
+                <ExternalLink className="w-4 h-4" />{t('sidebar.viewStore')}
               </button>
-              <button
-                onClick={() => navigate('/admin/settings')}
-                className="w-full flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted transition-colors font-cairo text-sm"
-              >
-                <Settings className="w-4 h-4" />
-                {t('sidebar.settings')}
+              <button onClick={() => navigate('/admin/settings')} className="w-full flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted/50 transition-colors font-cairo text-sm">
+                <Settings className="w-4 h-4" />{t('sidebar.settings')}
               </button>
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted transition-colors font-cairo text-sm text-destructive"
-              >
-                <LogOut className="w-4 h-4" />
-                {t('sidebar.logout')}
+              <button onClick={handleLogout} className="w-full flex items-center gap-2 px-2 py-2 rounded-md hover:bg-muted/50 transition-colors font-cairo text-sm text-destructive">
+                <LogOut className="w-4 h-4" />{t('sidebar.logout')}
               </button>
             </PopoverContent>
           </Popover>
@@ -585,8 +478,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <main className="p-3 sm:p-4 md:p-6 overflow-x-hidden min-w-0">{children}</main>
       </div>
 
-      {/* Overlay */}
-      {sidebarOpen && <div className="fixed inset-0 bg-foreground/30 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
+      {sidebarOpen && <div className="fixed inset-0 bg-background/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
     </div>
   );
 }
