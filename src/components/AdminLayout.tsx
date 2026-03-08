@@ -253,13 +253,24 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const checkAdmin = async (userId: string) => {
-      const { data } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
-      if (!data) {
-        toast.error(t('sidebar.noAccess'));
-        navigate('/');
-        return;
+      try {
+        const { data, error } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
+        if (error) {
+          // JWT expired or other auth error - sign out
+          await supabase.auth.signOut();
+          navigate('/admin/login');
+          return;
+        }
+        if (!data) {
+          toast.error(t('sidebar.noAccess'));
+          navigate('/');
+          return;
+        }
+        setIsAdmin(true);
+      } catch {
+        await supabase.auth.signOut();
+        navigate('/admin/login');
       }
-      setIsAdmin(true);
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
@@ -271,7 +282,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         checkAdmin(session.user.id).finally(() => setLoading(false));
       }
     });
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        supabase.auth.signOut();
+        setLoading(false);
+        navigate('/admin/login');
+        return;
+      }
       setUser(session?.user ?? null);
       if (!session?.user) {
         setLoading(false);
