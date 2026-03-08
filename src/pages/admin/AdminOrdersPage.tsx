@@ -303,6 +303,13 @@ export default function AdminOrdersPage() {
           <Button
             variant="outline"
             className="font-cairo gap-1.5"
+            onClick={() => setImportDialog(true)}
+          >
+            <Upload className="w-4 h-4" /> {t('import.uploadOrders')}
+          </Button>
+          <Button
+            variant="outline"
+            className="font-cairo gap-1.5"
             onClick={() => {
               if (filtered.length === 0) return;
               setSelectedIds(new Set(filtered.map(o => o.id)));
