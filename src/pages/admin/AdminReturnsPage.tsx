@@ -139,6 +139,27 @@ export default function AdminReturnsPage() {
           change_reason: params.reason || null,
         });
       }
+      // Restock items when return is completed
+      if (params.newStatus === 'completed') {
+        const { data: returnItems } = await supabase
+          .from('return_items')
+          .select('product_id, variant_id, quantity_returned')
+          .eq('return_request_id', params.id);
+        if (returnItems) {
+          for (const item of returnItems) {
+            if (item.variant_id) {
+              const { data: variant } = await supabase.from('product_variants').select('quantity').eq('id', item.variant_id).single();
+              if (variant) {
+                await supabase.from('product_variants').update({ quantity: variant.quantity + item.quantity_returned }).eq('id', item.variant_id);
+              }
+            }
+            const { data: prod } = await supabase.from('products').select('stock').eq('id', item.product_id).single();
+            if (prod) {
+              await supabase.from('products').update({ stock: (prod.stock || 0) + item.quantity_returned }).eq('id', item.product_id);
+            }
+          }
+        }
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin-returns'] });
