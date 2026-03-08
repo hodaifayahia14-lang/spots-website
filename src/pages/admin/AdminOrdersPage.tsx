@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Eye, ExternalLink, AlertTriangle, MoreHorizontal, PackageCheck, Truck, Clock, Ban, PackageOpen, CheckCircle, Filter, ChevronDown, ChevronUp, Loader2, CheckSquare, Zap, Plus, Download, Trash2, Upload } from 'lucide-react';
 import OrderImportDialog from '@/components/admin/OrderImportDialog';
+import TablePagination from '@/components/admin/TablePagination';
 import { formatPrice, formatDate } from '@/lib/format';
 import { useTranslation } from '@/i18n';
 
