@@ -150,6 +150,9 @@ export default function AdminCouponsPage() {
     return (coupons || []).filter(c => c.code.toLowerCase().includes(q));
   }, [coupons, searchQuery]);
 
+  const totalPages = Math.ceil(filteredCoupons.length / ITEMS_PER_PAGE);
+  const paginatedCoupons = filteredCoupons.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap justify-between items-center gap-2">

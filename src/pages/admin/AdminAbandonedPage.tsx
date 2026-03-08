@@ -66,6 +66,9 @@ export default function AdminAbandonedPage() {
     return a.customer_name.toLowerCase().includes(s) || a.customer_phone.includes(s);
   }) || [];
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   // KPI calculations
   const abandonedCount = abandoned?.filter(a => a.status === 'abandoned').length || 0;
   const contactedCount = abandoned?.filter(a => a.status === 'contacted').length || 0;

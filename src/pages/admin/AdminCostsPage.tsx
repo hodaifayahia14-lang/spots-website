@@ -122,6 +122,9 @@ export default function AdminCostsPage() {
     return productsWithCosts.filter(p => p.name.toLowerCase().includes(q));
   }, [productsWithCosts, search]);
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   // KPIs
   const kpis = useMemo(() => {
     const total = productsWithCosts.length;

@@ -243,6 +243,9 @@ export default function AdminConfirmersPage() {
     });
   }, [confirmers, searchQuery, filterType, filterStatus]);
 
+  const totalPages = Math.ceil(filteredConfirmers.length / ITEMS_PER_PAGE);
+  const paginatedConfirmers = filteredConfirmers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   const counts = useMemo(() => {
     const all = confirmers || [];
     return { total: all.length, private: all.filter(c => c.type === 'private').length, external: all.filter(c => c.type === 'external').length };
