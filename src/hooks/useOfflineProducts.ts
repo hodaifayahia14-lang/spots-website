@@ -76,12 +76,16 @@ export function useOfflineCategories() {
     queryKey: ['offline-categories-all'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true });
+        .from('products')
+        .select('category')
+        .eq('is_active', true);
       if (error) throw error;
-      return data || [];
+      // Extract unique categories from products
+      const allCats = new Set<string>();
+      (data || []).forEach((p: any) => {
+        if (Array.isArray(p.category)) p.category.forEach((c: string) => allCats.add(c));
+      });
+      return Array.from(allCats).map(c => ({ name: c, is_active: true }));
     },
     staleTime: 5 * 60 * 1000,
     placeholderData: placeholderData ? () => placeholderData : undefined,

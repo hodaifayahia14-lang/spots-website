@@ -1003,7 +1003,6 @@ export const fr: Record<string, string> = {
   'sidebar.expand': 'Développer',
 
   // ═══ Enhanced Pages ═══
-  'common.export': 'Exporter',
   'common.exportCSV': 'Exporter CSV',
   'common.sortBy': 'Trier par',
   'common.sortName': 'Nom',
@@ -1019,7 +1018,6 @@ export const fr: Record<string, string> = {
   'common.results': 'résultats',
   'common.refresh': 'Actualiser',
   'common.bulkActions': 'Actions groupées',
-  'common.selected': 'sélectionné(s)',
   'common.selectAll': 'Tout sélectionner',
   'common.deleteSelected': 'Supprimer la sélection',
   'common.noResults': 'Aucun résultat trouvé',

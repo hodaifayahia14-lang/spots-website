@@ -28,7 +28,7 @@ interface QuickViewProps {
 
 export default function QuickViewModal({ product, reviewStats, onClose }: QuickViewProps) {
   const { addItem } = useCart();
-  const { toggleWishlist, isWishlisted } = useWishlist();
+  const { toggleWishlist, isInWishlist: isWishlisted } = useWishlist();
   const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState(product.main_image_index ?? 0);
   const images = product.images || [];
