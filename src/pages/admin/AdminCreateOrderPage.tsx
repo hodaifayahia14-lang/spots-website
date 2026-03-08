@@ -142,7 +142,8 @@ export default function AdminCreateOrderPage() {
 
   const updateQuantity = (index: number, delta: number) => {
     const updated = [...orderItems];
-    updated[index].quantity = Math.max(1, updated[index].quantity + delta);
+    const newQty = updated[index].quantity + delta;
+    updated[index].quantity = Math.max(1, Math.min(newQty, updated[index].stock || 999));
     setOrderItems(updated);
   };
 
