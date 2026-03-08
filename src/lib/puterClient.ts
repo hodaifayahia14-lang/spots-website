@@ -1,11 +1,6 @@
 declare global {
   interface Window {
-    puter?: {
-      ai: {
-        txt2img(prompt: string, options?: { model?: string }): Promise<HTMLImageElement>;
-        chat(prompt: string, options?: { model?: string }): Promise<{ message: { content: string } } | string>;
-      };
-    };
+    puter?: any;
   }
 }
 
