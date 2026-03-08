@@ -557,6 +557,7 @@ export default function AdminConfirmersPage() {
               <p className="font-cairo text-muted-foreground font-medium">لا يوجد مؤكدين بعد</p>
             </div>
           )}
+          <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filteredConfirmers.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
         </TabsContent>
 
         {/* ===== TAB 3: Confirmation Settings ===== */}

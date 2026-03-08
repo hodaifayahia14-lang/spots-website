@@ -318,6 +318,8 @@ export default function AdminReturnsPage() {
         })}
       </div>
 
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
+
       {/* Detail Dialog */}
       {selectedReturn && (
         <ReturnDetailDialog

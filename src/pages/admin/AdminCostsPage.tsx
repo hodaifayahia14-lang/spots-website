@@ -477,6 +477,7 @@ export default function AdminCostsPage() {
           </div>
         </>
       )}
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
     </div>
   );
 }

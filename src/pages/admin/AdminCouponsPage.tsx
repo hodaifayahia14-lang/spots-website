@@ -249,6 +249,8 @@ export default function AdminCouponsPage() {
         })}
       </div>
 
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filteredCoupons.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
+
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle className="font-cairo">{editing ? t('coupons.editCoupon') : t('coupons.addCoupon')}</DialogTitle></DialogHeader>

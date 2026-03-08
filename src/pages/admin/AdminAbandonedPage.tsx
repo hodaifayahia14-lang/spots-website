@@ -288,6 +288,8 @@ export default function AdminAbandonedPage() {
         </div>
       )}
 
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
+
       {/* Note Dialog */}
       <Dialog open={!!noteDialog} onOpenChange={o => !o && setNoteDialog(null)}>
         <DialogContent>
