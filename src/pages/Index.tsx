@@ -292,7 +292,7 @@ export default function IndexPage() {
         </section>
       </AnimatedSection>
 
-      {/* ─── Featured Categories — with hover effects, decorative emojis, shimmer ─── */}
+      {/* ─── Featured Categories — Premium Bento Grid ─── */}
       <section className="py-20 md:py-28">
         <div className="container">
           <AnimatedSection>
@@ -301,22 +301,44 @@ export default function IndexPage() {
               <SectionHeader title="تصفح حسب الفئة" subtitle="اختر الفئة المناسبة واستمتع بتجربة تسوق فريدة" center />
             </div>
           </AnimatedSection>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mt-10">
             {categoryCards.map((cat, i) => (
-              <AnimatedSection key={cat.name} delay={i * 120}>
+              <AnimatedSection key={cat.name} delay={i * 100}>
                 <Link to={`/products?category=${encodeURIComponent(cat.name)}`}>
-                  <div className="relative rounded-3xl overflow-hidden h-64 sm:h-72 group cursor-pointer border border-secondary/20 hover:border-secondary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+                  <div className={`relative rounded-3xl overflow-hidden group cursor-pointer border border-border/50 hover:border-secondary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 ${i === 0 ? 'lg:col-span-1 h-72 sm:h-80' : 'h-72 sm:h-80'}`}>
+                    {/* Background gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-t ${cat.gradient}`} />
-                    {/* Shimmer overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                    {/* Animated shimmer */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms]" />
+                    {/* Decorative circles */}
+                    <div className="absolute -top-8 -right-8 w-32 h-32 bg-white/5 rounded-full blur-sm group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-white/5 rounded-full blur-sm" />
+                    
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 z-10">
-                      <span className="absolute top-4 left-4 text-2xl opacity-30 group-hover:opacity-60 transition-opacity">{cat.decorEmoji}</span>
-                      <span className="text-6xl mb-4 group-hover:scale-125 group-hover:-rotate-6 transition-all duration-500 drop-shadow-lg">{cat.emoji}</span>
-                      <h3 className="font-cairo font-extrabold text-2xl text-amber-50 mb-2">{cat.name}</h3>
-                      <p className="font-cairo text-sm text-amber-200/70 max-w-[200px]">{cat.subtitle}</p>
-                      <div className="mt-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                        <span className="font-cairo text-xs text-amber-100 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 border border-white/20">
-                          تصفح الآن ←
+                      {/* Floating decor */}
+                      <span className="absolute top-4 left-4 text-xl opacity-20 group-hover:opacity-50 group-hover:rotate-12 transition-all duration-500">{cat.decorEmoji}</span>
+                      <span className="absolute bottom-4 right-4 text-lg opacity-15 group-hover:opacity-40 transition-opacity duration-500">{cat.decorEmoji}</span>
+                      
+                      {/* Icon container */}
+                      <div className={`w-20 h-20 rounded-3xl ${cat.iconBg} backdrop-blur-sm flex items-center justify-center mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500 border border-white/10 shadow-xl`}>
+                        <span className="text-4xl drop-shadow-lg">{cat.emoji}</span>
+                      </div>
+                      
+                      <h3 className="font-cairo font-extrabold text-xl sm:text-2xl text-amber-50 mb-1.5 tracking-tight">{cat.name}</h3>
+                      <p className="font-cairo text-xs sm:text-sm text-amber-200/60 max-w-[180px] leading-relaxed">{cat.subtitle}</p>
+                      
+                      {/* Product count badge */}
+                      {cat.count > 0 && (
+                        <span className="mt-3 font-cairo text-[11px] text-amber-100/80 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 border border-white/10">
+                          {cat.count} منتج
+                        </span>
+                      )}
+                      
+                      {/* Hover CTA */}
+                      <div className="mt-4 opacity-0 group-hover:opacity-100 transform translate-y-3 group-hover:translate-y-0 transition-all duration-300">
+                        <span className="font-cairo text-xs text-amber-100 bg-white/15 backdrop-blur-sm rounded-full px-5 py-2 border border-white/20 inline-flex items-center gap-1.5 shadow-lg">
+                          تصفح الآن
+                          <ChevronLeft className="w-3.5 h-3.5" />
                         </span>
                       </div>
                     </div>
