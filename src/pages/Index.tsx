@@ -145,7 +145,7 @@ export default function IndexPage() {
   const categoryCards = [
     { name: 'تمور', subtitle: 'أجود أنواع التمور الجزائرية', emoji: '🌴', gradient: 'from-amber-900/90 via-amber-800/80 to-amber-700/60', decorEmoji: '✨', iconBg: 'bg-amber-500/20', count: allProducts?.filter(p => p.category?.includes('تمور')).length || 0 },
     { name: 'عسل', subtitle: 'عسل طبيعي خام من الجبال', emoji: '🍯', gradient: 'from-yellow-900/90 via-yellow-800/80 to-yellow-600/60', decorEmoji: '🐝', iconBg: 'bg-yellow-500/20', count: allProducts?.filter(p => p.category?.includes('عسل')).length || 0 },
-    { name: 'هدايا وتشكيلات', subtitle: 'علب هدايا فاخرة للمناسبات', emoji: '🎁', gradient: 'from-emerald-900/90 via-emerald-800/80 to-emerald-700/60', decorEmoji: '🎀', iconBg: 'bg-emerald-500/20', count: allProducts?.filter(p => p.category?.includes('هدايا وتشكيلات') || p.category?.includes('هدايا')).length || 0 },
+    { name: 'هدايا وتشكيلات', subtitle: 'علب هدايا فاخرة للمناسبات', emoji: '🎁', gradient: 'from-amber-950/90 via-amber-900/80 to-yellow-800/60', decorEmoji: '🎀', iconBg: 'bg-yellow-500/20', count: allProducts?.filter(p => p.category?.includes('هدايا وتشكيلات') || p.category?.includes('هدايا')).length || 0 },
     { name: 'مشتقات', subtitle: 'دبس التمر ومنتجات طبيعية', emoji: '🫙', gradient: 'from-orange-900/90 via-orange-800/80 to-orange-700/60', decorEmoji: '🌿', iconBg: 'bg-orange-500/20', count: allProducts?.filter(p => p.category?.includes('مشتقات')).length || 0 },
   ];
 
@@ -411,7 +411,7 @@ export default function IndexPage() {
                   {[
                     { icon: '🌴', value: 50, suffix: '+', label: 'نوع من التمور', color: 'from-amber-500/10 to-amber-600/5' },
                     { icon: '🍯', value: 20, suffix: '+', label: 'نوع من العسل', color: 'from-yellow-500/10 to-yellow-600/5' },
-                    { icon: '⭐', value: 10000, suffix: '+', label: 'عميل راضٍ', color: 'from-emerald-500/10 to-emerald-600/5' },
+                    { icon: '⭐', value: 10000, suffix: '+', label: 'عميل راضٍ', color: 'from-orange-500/10 to-orange-600/5' },
                   ].map((stat, i) => (
                     <div key={i} className={`text-center bg-gradient-to-br ${stat.color} border border-border/50 rounded-2xl p-5 hover:-translate-y-1 transition-all duration-300 hover:shadow-lg`}>
                       <span className="text-3xl">{stat.icon}</span>
@@ -433,8 +433,8 @@ export default function IndexPage() {
                 <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-secondary/20 rounded-full blur-2xl" />
                 <div className="absolute -top-6 -left-6 w-36 h-36 bg-primary/10 rounded-full blur-3xl" />
                 <div className="absolute -bottom-4 left-6 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl p-3 shadow-xl animate-fade-in hidden sm:flex items-center gap-3" style={{ animationDelay: '0.5s' }}>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                    <ThumbsUp className="w-5 h-5 text-emerald-500" />
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                    <ThumbsUp className="w-5 h-5 text-amber-500" />
                   </div>
                   <div>
                     <p className="font-cairo font-bold text-sm">+10,000</p>
