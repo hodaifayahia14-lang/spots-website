@@ -60,6 +60,8 @@ export default function AdminReturnsPage() {
   const [typeFilter, setTypeFilter] = useState('الكل');
   const [selectedReturn, setSelectedReturn] = useState<any>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   // Fetch returns with joins
   const { data: returns, isLoading } = useQuery({
