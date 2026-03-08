@@ -188,7 +188,7 @@ export default function AdminReturnsPage() {
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('returns.searchPlaceholder')} className="pr-10 font-cairo" />
+          <Input value={search} onChange={e => { setSearch(e.target.value); setCurrentPage(1); }} placeholder={t('returns.searchPlaceholder')} className="pr-10 font-cairo" />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-44 font-cairo"><SelectValue /></SelectTrigger>

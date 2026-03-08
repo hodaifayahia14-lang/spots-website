@@ -58,6 +58,8 @@ export default function AdminCostsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   // Fetch products including has_variants flag
   const { data: products, isLoading: loadingProducts } = useQuery({

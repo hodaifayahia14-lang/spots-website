@@ -44,6 +44,8 @@ export default function AdminConfirmersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('الكل');
   const [filterStatus, setFilterStatus] = useState('الكل');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   // Tab 1: Add form state
   const [addName, setAddName] = useState('');
