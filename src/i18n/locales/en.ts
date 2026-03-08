@@ -966,6 +966,20 @@ export const en: Record<string, string> = {
   'delivery.importSuccess': '{n} wilayas updated successfully',
   'delivery.invalidFile': 'Invalid file',
 
+  // ═══ Statistics ═══
+  'stats.title': 'Statistics',
+  'stats.description': 'Analyze sales, products, and wilaya performance',
+  'stats.totalOrders': 'Total Orders',
+  'stats.revenue': 'Revenue',
+  'stats.delivered': 'Delivered',
+  'stats.cancelRate': 'Cancel Rate',
+  'stats.deliveryRate': 'Delivery Rate',
+  'stats.topProducts': 'Top Selling Products',
+  'stats.topWilayas': 'Top Wilayas by Demand',
+  'stats.unitsSold': 'units sold',
+  'stats.wilaya': 'Wilaya',
+  'stats.noData': 'Not enough data',
+
   // ═══ Dashboard Payment Alerts ═══
   'dashboard.suppliersToPayTitle': '⚠ Suppliers to Pay',
   'dashboard.clientsToCollectTitle': '💰 Clients Who Owe You',
