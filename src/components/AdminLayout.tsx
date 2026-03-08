@@ -80,6 +80,7 @@ const NAV_GROUPS = [
       { href: '/admin/returns', key: 'sidebar.returns', icon: RotateCcw },
       { href: '/admin/costs', key: 'sidebar.costs', icon: DollarSign },
       { href: '/admin/abandoned', key: 'sidebar.abandoned', icon: PackageX },
+      { href: '/admin/statistics', key: 'stats.title', icon: BarChart3 },
     ],
   },
   {
