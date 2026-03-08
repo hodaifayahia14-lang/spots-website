@@ -157,7 +157,7 @@ export default function AdminClientsPage() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute top-1/2 -translate-y-1/2 start-3 w-4 h-4 text-muted-foreground" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('clients.searchPlaceholder')} className="ps-9 font-cairo" />
+          <Input value={search} onChange={e => { setSearch(e.target.value); setCurrentPage(1); }} placeholder={t('clients.searchPlaceholder')} className="ps-9 font-cairo" />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[140px] font-cairo"><SelectValue /></SelectTrigger>
