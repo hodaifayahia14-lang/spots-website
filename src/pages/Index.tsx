@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import ProductCard from '@/components/ProductCard';
 import { ProductGridSkeleton } from '@/components/LoadingSkeleton';
 import { useCategories } from '@/hooks/useCategories';
-import heroSportsImage from '@/assets/hero-sports.jpg';
+import heroSportsImage from '@/assets/hero-sports-v2.jpg';
 import AnimatedSection from '@/components/AnimatedSection';
 import MinimalTemplate from '@/components/templates/MinimalTemplate';
 import BoldTemplate from '@/components/templates/BoldTemplate';
@@ -180,81 +180,127 @@ export default function IndexPage() {
           </div>
         </section>
       ) : (
-        <section className="relative isolate overflow-hidden min-h-[90vh] flex items-center">
+        <section className="relative isolate overflow-hidden min-h-[100vh] flex items-center">
           {/* Parallax BG */}
-          <div className="absolute inset-0" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
-            <img src={heroSportsImage} alt="" aria-hidden className="w-full h-[120%] object-cover" />
+          <div className="absolute inset-0" style={{ transform: `translateY(${scrollY * 0.25}px)` }}>
+            <img src={heroSportsImage} alt="" aria-hidden className="w-full h-[130%] object-cover scale-110" />
           </div>
-          {/* Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1a]/95 via-[#0a0f1a]/70 to-[#0a0f1a]/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a]/80 via-transparent to-transparent" />
-
-          {/* Decorative speed lines */}
+          {/* Dark cinematic overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#000]/90 via-[#000]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#000]/90 via-transparent to-[#000]/30" />
+          {/* Animated neon grid lines */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="absolute h-[2px] opacity-10 animate-pulse"
+            <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent animate-pulse" />
+            <div className="absolute bottom-20 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-pulse" style={{ animationDelay: '0.5s' }} />
+            {/* Floating particles */}
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="absolute w-1 h-1 bg-primary/40 rounded-full animate-pulse"
                 style={{
-                  width: `${100 + i * 60}px`,
-                  background: `linear-gradient(90deg, transparent, hsl(145 80% 48%), transparent)`,
-                  top: `${20 + i * 15}%`,
-                  right: `${5 + i * 10}%`,
-                  animationDelay: `${i * 0.5}s`,
-                  transform: 'rotate(-5deg)',
+                  top: `${15 + i * 10}%`,
+                  left: `${10 + i * 12}%`,
+                  animationDelay: `${i * 0.3}s`,
+                  animationDuration: `${2 + i * 0.5}s`,
+                }}
+              />
+            ))}
+            {/* Speed lines */}
+            {[...Array(6)].map((_, i) => (
+              <div key={`line-${i}`} className="absolute h-[1px]"
+                style={{
+                  width: `${150 + i * 80}px`,
+                  background: `linear-gradient(90deg, transparent, hsl(145 80% 48% / ${0.15 + i * 0.05}), transparent)`,
+                  top: `${15 + i * 13}%`,
+                  right: `${-5 + i * 8}%`,
+                  transform: `rotate(-${3 + i}deg)`,
+                  animation: `pulse ${2 + i * 0.4}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.2}s`,
                 }}
               />
             ))}
           </div>
 
-          <div className="container relative z-10 py-24 md:py-32 lg:py-40">
-            <div className="max-w-3xl space-y-8">
-              {/* Badge */}
+          <div className="container relative z-10 py-20 md:py-28 lg:py-36">
+            <div className="max-w-3xl space-y-7">
+              {/* Animated badge */}
               <div className="animate-fade-in">
-                <span className="inline-flex items-center gap-2.5 font-cairo text-sm font-bold tracking-wide bg-primary/20 text-primary backdrop-blur-md rounded-full px-6 py-2.5 border border-primary/30">
-                  <Zap className="w-4 h-4" />
-                  🏆 أفضل متجر رياضي في الجزائر
+                <span className="inline-flex items-center gap-2.5 font-cairo text-xs sm:text-sm font-bold tracking-wide bg-primary/15 text-primary backdrop-blur-xl rounded-full px-5 py-2 border border-primary/30 shadow-lg shadow-primary/10">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                  </span>
+                  🏆 المتجر الرياضي #1 في الجزائر
                 </span>
               </div>
 
-              <h1 className="font-cairo font-black text-4xl sm:text-5xl lg:text-7xl leading-[1.1] tracking-tight animate-fade-in" style={{ animationDelay: '0.15s' }}>
-                <span className="text-white">جهّز نفسك</span>
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-l from-primary via-emerald-400 to-primary neon-glow">للتحدي القادم</span>
-              </h1>
+              {/* Massive hero title with layered glow */}
+              <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                <h1 className="font-cairo font-black text-5xl sm:text-6xl lg:text-8xl leading-[1.05] tracking-tight">
+                  <span className="block text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">جهّز نفسك</span>
+                  <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-l from-primary via-emerald-300 to-primary" style={{ textShadow: '0 0 60px hsl(145 80% 48% / 0.3)' }}>
+                    للتحدي القادم
+                  </span>
+                </h1>
+              </div>
 
-              <p className="font-cairo text-white/60 text-lg sm:text-xl lg:text-2xl leading-relaxed max-w-xl animate-fade-in" style={{ animationDelay: '0.25s' }}>
-                أحذية رياضية، معدات تدريب، ملابس رياضية — كل ما تحتاجه لتكون بطلاً
-              </p>
+              {/* Subtitle with accent bar */}
+              <div className="animate-fade-in flex items-start gap-4" style={{ animationDelay: '0.2s' }}>
+                <div className="w-1 h-16 bg-gradient-to-b from-primary to-transparent rounded-full mt-1 shrink-0" />
+                <p className="font-cairo text-white/70 text-lg sm:text-xl lg:text-2xl leading-relaxed max-w-xl">
+                  أحذية رياضية، معدات تدريب، ملابس رياضية — كل ما تحتاجه لتكون <span className="text-primary font-bold">بطلاً</span>
+                </p>
+              </div>
 
-              {/* Search */}
+              {/* Search with glass effect */}
               <form onSubmit={handleSearch} className="flex gap-2 max-w-lg animate-fade-in" style={{ animationDelay: '0.3s' }}>
                 <div className="relative flex-1">
-                  <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <Input
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="ابحث عن معدات رياضية..."
-                    className="pr-12 font-cairo bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/40 rounded-2xl h-14 text-base focus:bg-white/15 focus:border-primary/50"
+                    className="pr-12 font-cairo bg-white/[0.07] backdrop-blur-2xl border-white/[0.12] text-white placeholder:text-white/30 rounded-2xl h-14 text-base focus:bg-white/[0.12] focus:border-primary/50 shadow-inner shadow-black/20 transition-all duration-300"
                   />
                 </div>
-                <Button type="submit" size="lg" className="font-cairo font-bold rounded-2xl h-14 px-8 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30">بحث</Button>
+                <Button type="submit" size="lg" className="font-cairo font-bold rounded-2xl h-14 px-8 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/40 hover:shadow-xl hover:shadow-primary/50 transition-all duration-300">بحث</Button>
               </form>
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons - enhanced */}
               <div className="flex flex-wrap items-center gap-4 pt-2 animate-fade-in" style={{ animationDelay: '0.4s' }}>
                 <Link to="/products">
-                  <Button size="lg" className="font-cairo font-bold text-base sm:text-lg px-10 h-14 gap-2.5 rounded-2xl shadow-xl shadow-primary/30 hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 bg-primary hover:bg-primary/90 group">
-                    تسوّق الآن
-                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                  <Button size="lg" className="font-cairo font-bold text-base sm:text-lg px-10 h-14 gap-2.5 rounded-2xl shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/50 hover:scale-[1.04] transition-all duration-300 bg-primary hover:bg-primary/90 group relative overflow-hidden">
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <span className="relative flex items-center gap-2.5">
+                      تسوّق الآن
+                      <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1.5 transition-transform" />
+                    </span>
                   </Button>
                 </Link>
                 <Link to="/products">
-                  <Button size="lg" variant="outline" className="font-cairo font-semibold text-base sm:text-lg px-10 h-14 rounded-2xl border-white/20 text-white hover:bg-white/10 hover:border-white/40 backdrop-blur-md bg-white/5 transition-all duration-300">
+                  <Button size="lg" variant="outline" className="font-cairo font-semibold text-base sm:text-lg px-10 h-14 rounded-2xl border-white/15 text-white hover:bg-white/10 hover:border-white/30 backdrop-blur-xl bg-white/[0.05] transition-all duration-300 shadow-lg shadow-black/10">
                     عروض اليوم 🔥
                   </Button>
                 </Link>
               </div>
+
+              {/* Mini stats row in hero */}
+              <div className="flex flex-wrap gap-6 pt-6 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+                {[
+                  { value: '500+', label: 'منتج رياضي' },
+                  { value: '15K+', label: 'عميل راضٍ' },
+                  { value: '48', label: 'ولاية تغطية' },
+                ].map((s, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <span className="font-roboto font-black text-xl sm:text-2xl text-primary">{s.value}</span>
+                    <span className="font-cairo text-xs text-white/50">{s.label}</span>
+                    {i < 2 && <div className="w-[1px] h-6 bg-white/10 mr-3" />}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+
+          {/* Bottom gradient fade to content */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
         </section>
       )}
 
