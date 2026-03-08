@@ -474,7 +474,7 @@ export type Database = {
         Row: {
           id: string
           order_id: string
-          product_id: string
+          product_id: string | null
           quantity: number
           unit_price: number
           variant_id: string | null
@@ -482,7 +482,7 @@ export type Database = {
         Insert: {
           id?: string
           order_id: string
-          product_id: string
+          product_id?: string | null
           quantity: number
           unit_price: number
           variant_id?: string | null
@@ -490,7 +490,7 @@ export type Database = {
         Update: {
           id?: string
           order_id?: string
-          product_id?: string
+          product_id?: string | null
           quantity?: number
           unit_price?: number
           variant_id?: string | null
