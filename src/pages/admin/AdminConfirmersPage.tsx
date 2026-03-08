@@ -14,6 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Plus, Trash2, Pencil, UserCheck, Search, ToggleLeft, ToggleRight, Settings, Users, UserPlus, Eye, EyeOff } from 'lucide-react';
 import { formatDate } from '@/lib/format';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 const TYPE_OPTIONS = [
   { value: 'private', label: 'خاص', color: 'bg-primary/10 text-primary' },
