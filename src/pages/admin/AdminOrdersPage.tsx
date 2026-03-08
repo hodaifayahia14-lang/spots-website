@@ -397,7 +397,7 @@ export default function AdminOrdersPage() {
               className="font-cairo gap-1.5 text-xs"
               onClick={() => setDeliveryDialog(true)}
             >
-              <Download className="w-3.5 h-3.5" /> {t('delivery.exportToDelivery')}
+              <Truck className="w-3.5 h-3.5" /> {t('delivery.sendToDelivery')}
             </Button>
             <Button size="sm" variant="ghost" className="font-cairo text-xs" onClick={() => setSelectedIds(new Set())}>
               {t('common.deselectAll')}
