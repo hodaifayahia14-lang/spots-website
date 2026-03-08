@@ -186,6 +186,9 @@ export default function AdminDeliveryPage() {
         ))}
       </div>
 
+      {/* Per-company per-wilaya pricing */}
+      <DeliveryCompanyPricing />
+
       {/* Add Dialog */}
       <Dialog open={showAdd} onOpenChange={setShowAdd}>
         <DialogContent>
