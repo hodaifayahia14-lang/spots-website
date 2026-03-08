@@ -48,6 +48,9 @@ export default function AdminSuppliersPage() {
     });
   }, [suppliers, search, statusFilter]);
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   const handleViewToggle = (mode: 'table' | 'grid') => {
     setViewMode(mode);
     localStorage.setItem('suppliers-view', mode);
