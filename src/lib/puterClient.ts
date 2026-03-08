@@ -1,9 +1,4 @@
-declare global {
-  interface Window {
-    puter?: any;
-  }
-}
-
+let puterLoadPromise: Promise<void> | null = null;
 let puterLoadPromise: Promise<void> | null = null;
 
 export async function ensurePuterLoaded(): Promise<void> {
