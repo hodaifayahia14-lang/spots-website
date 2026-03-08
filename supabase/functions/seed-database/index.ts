@@ -12,7 +12,6 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const summary: Record<string, number> = {};
@@ -30,12 +29,39 @@ serve(async (req) => {
     const wilayaIds = wilayas?.map(w => w.id) || [];
     const wilayaMap = wilayas?.reduce((m, w) => ({ ...m, [w.name]: w.id }), {} as Record<string, string>) || {};
 
+    // ─── 0. ADMIN USER ───
+    const { data: body } = await req.json().catch(() => ({ data: null })) || {};
+    const adminEmail = body?.adminEmail || "admin@dzsports.com";
+    const adminPassword = body?.adminPassword || "Admin123!";
+
+    // Create admin user
+    const { data: adminUser, error: adminError } = await supabase.auth.admin.createUser({
+      email: adminEmail,
+      password: adminPassword,
+      email_confirm: true,
+    });
+
+    if (adminUser?.user) {
+      await supabase.from("user_roles").insert({ user_id: adminUser.user.id, role: "admin" });
+      summary.admin_user = 1;
+    } else {
+      console.log("Admin user may already exist:", adminError?.message);
+      // Try to find existing user and assign role
+      const { data: existingUsers } = await supabase.auth.admin.listUsers();
+      const existing = existingUsers?.users?.find(u => u.email === adminEmail);
+      if (existing) {
+        const { data: hasRole } = await supabase.from("user_roles").select("id").eq("user_id", existing.id).eq("role", "admin").maybeSingle();
+        if (!hasRole) await supabase.from("user_roles").insert({ user_id: existing.id, role: "admin" });
+        summary.admin_user = 1;
+      }
+    }
+
     // ─── 1. SETTINGS ───
     const settingsData = [
-      { key: "store_name", value: "متجر الجزائر" },
-      { key: "store_description", value: "أفضل متجر إلكتروني في الجزائر" },
+      { key: "store_name", value: "DZ Sports" },
+      { key: "store_description", value: "المتجر الرياضي #1 في الجزائر" },
       { key: "currency", value: "د.ج" },
-      { key: "primary_color", value: "#2563eb" },
+      { key: "primary_color", value: "#22c55e" },
       { key: "whatsapp_number", value: "0555123456" },
     ];
     for (const s of settingsData) {
@@ -45,26 +71,25 @@ serve(async (req) => {
     }
     summary.settings = settingsData.length;
 
-    // ─── 2. PRODUCTS ───
+    // ─── 2. SPORTS PRODUCTS ───
     const products = [
-      { name: "هاتف ذكي سامسونج A54", category: ["إلكترونيات"], price: 45000, old_price: 52000, stock: 25, description: "هاتف سامسونج Galaxy A54 بشاشة 6.4 بوصة، كاميرا 50 ميغابيكسل", short_description: "هاتف ذكي بمواصفات عالية", sku: "PHONE-001", slug: "samsung-a54", product_type: "physical" },
-      { name: "سماعات بلوتوث لاسلكية", category: ["إلكترونيات", "إكسسوارات"], price: 3500, old_price: 4500, stock: 50, description: "سماعات بلوتوث 5.0 مع علبة شحن، عزل ضوضاء نشط", short_description: "سماعات لاسلكية عالية الجودة", sku: "AUDIO-001", slug: "bluetooth-earbuds", product_type: "physical" },
-      { name: "حقيبة يد جلدية نسائية", category: ["أزياء", "إكسسوارات"], price: 6500, old_price: 8000, stock: 15, description: "حقيبة يد من الجلد الطبيعي، تصميم أنيق مع عدة جيوب", short_description: "حقيبة جلدية أنيقة", sku: "BAG-001", slug: "leather-handbag", product_type: "physical", has_variants: true },
-      { name: "عسل طبيعي سدر", category: ["غذاء", "صحة"], price: 4500, stock: 30, description: "عسل سدر طبيعي 100% من جبال الجزائر، 500 غرام", short_description: "عسل طبيعي نقي", sku: "HONEY-001", slug: "sidr-honey", product_type: "physical" },
-      { name: "كريم مرطب للبشرة", category: ["جمال", "صحة"], price: 2200, old_price: 2800, stock: 40, description: "كريم مرطب طبيعي بزيت الأركان وفيتامين E", short_description: "كريم مرطب طبيعي", sku: "BEAUTY-001", slug: "moisturizing-cream", product_type: "physical" },
-      { name: "ساعة يد رجالية كلاسيكية", category: ["إكسسوارات", "أزياء"], price: 8500, old_price: 12000, stock: 10, description: "ساعة يد رجالية بتصميم كلاسيك، مقاومة للماء", short_description: "ساعة رجالية أنيقة", sku: "WATCH-001", slug: "classic-watch", product_type: "physical", has_variants: true },
-      { name: "طقم أواني مطبخ", category: ["منزل"], price: 12000, old_price: 15000, stock: 8, description: "طقم أواني طبخ من الستانلس ستيل، 12 قطعة مع أغطية", short_description: "طقم أواني 12 قطعة", sku: "KITCHEN-001", slug: "kitchen-set", product_type: "physical" },
-      { name: "حذاء رياضي نايك", category: ["رياضة", "أزياء"], price: 9500, old_price: 11000, stock: 20, description: "حذاء رياضي مريح للجري والمشي اليومي، نعل مرن", short_description: "حذاء رياضي مريح", sku: "SHOE-001", slug: "nike-sports-shoe", product_type: "physical", has_variants: true },
-      { name: "عطر رجالي فاخر", category: ["جمال"], price: 7000, old_price: 9000, stock: 18, description: "عطر رجالي فاخر برائحة خشبية مميزة، 100 مل", short_description: "عطر فاخر 100 مل", sku: "PERFUME-001", slug: "luxury-perfume", product_type: "physical" },
-      { name: "لابتوب لينوفو IdeaPad", category: ["إلكترونيات"], price: 85000, old_price: 95000, stock: 5, description: "لابتوب لينوفو بمعالج i5، ذاكرة 8GB، تخزين 256GB SSD", short_description: "لابتوب بمواصفات جيدة", sku: "LAPTOP-001", slug: "lenovo-ideapad", product_type: "physical" },
-      { name: "تمر دقلة نور ممتاز", category: ["غذاء"], price: 1800, stock: 60, description: "تمر دقلة نور ممتاز من ولاية بسكرة، 1 كيلو", short_description: "تمر جزائري ممتاز", sku: "DATES-001", slug: "deglet-noor", product_type: "physical" },
-      { name: "طاولة قهوة خشبية", category: ["منزل"], price: 15000, old_price: 18000, stock: 6, description: "طاولة قهوة من خشب الزان الطبيعي، تصميم عصري", short_description: "طاولة قهوة أنيقة", sku: "FURN-001", slug: "coffee-table", product_type: "physical" },
-      { name: "زيت زيتون بكر", category: ["غذاء", "صحة"], price: 2500, stock: 45, description: "زيت زيتون بكر ممتاز من منطقة القبائل، 1 لتر", short_description: "زيت زيتون طبيعي", sku: "OIL-001", slug: "olive-oil", product_type: "physical" },
-      { name: "قميص قطني رجالي", category: ["أزياء"], price: 3200, old_price: 4000, stock: 35, description: "قميص قطني 100% بألوان متعددة، مريح للارتداء اليومي", short_description: "قميص قطني مريح", sku: "SHIRT-001", slug: "cotton-shirt", product_type: "physical", has_variants: true },
-      { name: "شاحن متعدد المنافذ", category: ["إلكترونيات", "إكسسوارات"], price: 2800, old_price: 3500, stock: 55, description: "شاحن USB-C سريع 65 وات مع 4 منافذ", short_description: "شاحن سريع 65W", sku: "CHARGE-001", slug: "multi-charger", product_type: "physical" },
+      { name: "حذاء جري Nike Air Max", category: ["جري", "أحذية"], price: 12500, old_price: 15000, stock: 30, description: "حذاء جري احترافي Nike Air Max مع تقنية امتصاص الصدمات، نعل مرن ومريح للتدريب اليومي والماراثون", short_description: "حذاء جري احترافي", sku: "SHOE-001", slug: "nike-air-max", product_type: "physical", has_variants: true },
+      { name: "كرة قدم Adidas Pro", category: ["كرة القدم"], price: 4500, old_price: 5500, stock: 50, description: "كرة قدم احترافية Adidas معتمدة من FIFA، خياطة يدوية، مقاومة للماء", short_description: "كرة قدم احترافية FIFA", sku: "BALL-001", slug: "adidas-football", product_type: "physical" },
+      { name: "طقم ملابس رياضية Nike Dri-FIT", category: ["لياقة بدنية", "ملابس رياضية"], price: 7800, old_price: 9500, stock: 25, description: "طقم تدريب كامل Nike Dri-FIT بتقنية التهوية المتقدمة، يشمل تيشرت وشورت", short_description: "طقم تدريب متكامل", sku: "SET-001", slug: "nike-drifit-set", product_type: "physical", has_variants: true },
+      { name: "دمبل حديد قابل للتعديل 20 كغ", category: ["لياقة بدنية", "معدات"], price: 8500, stock: 15, description: "دمبل حديد قابل للتعديل من 2.5 إلى 20 كغ، طلاء مطاطي مانع للانزلاق، مثالي للتدريب المنزلي", short_description: "دمبل قابل للتعديل", sku: "DUMB-001", slug: "adjustable-dumbbell", product_type: "physical" },
+      { name: "مضرب تنس Wilson Pro Staff", category: ["تنس"], price: 15000, old_price: 18000, stock: 10, description: "مضرب تنس Wilson Pro Staff V14، وزن 315 غ، مثالي للاعبين المتقدمين", short_description: "مضرب تنس احترافي", sku: "TENNIS-001", slug: "wilson-pro-staff", product_type: "physical" },
+      { name: "ساعة رياضية Garmin Forerunner", category: ["إكسسوارات", "جري"], price: 25000, old_price: 30000, stock: 8, description: "ساعة GPS رياضية مع مراقبة نبضات القلب، تتبع السعرات الحرارية، مقاومة للماء 50 متر", short_description: "ساعة GPS رياضية", sku: "WATCH-001", slug: "garmin-forerunner", product_type: "physical" },
+      { name: "حقيبة رياضية Under Armour", category: ["إكسسوارات"], price: 5500, old_price: 6500, stock: 35, description: "حقيبة رياضية كبيرة مع جيب أحذية منفصل، مقاومة للماء، سعة 60 لتر", short_description: "حقيبة رياضية 60L", sku: "BAG-001", slug: "under-armour-bag", product_type: "physical" },
+      { name: "كرة سلة Spalding NBA", category: ["كرة السلة"], price: 6000, old_price: 7000, stock: 20, description: "كرة سلة Spalding رسمية NBA، جلد صناعي متين، مقاس 7", short_description: "كرة سلة NBA رسمية", sku: "BBALL-001", slug: "spalding-nba", product_type: "physical" },
+      { name: "بنش بريس متعدد الاستخدام", category: ["لياقة بدنية", "معدات"], price: 35000, old_price: 42000, stock: 5, description: "بنش بريس قابل للتعديل مع حامل بار، يدعم حتى 300 كغ، مثالي لصالة المنزل", short_description: "بنش بريس احترافي", sku: "BENCH-001", slug: "multi-bench-press", product_type: "physical" },
+      { name: "نظارة سباحة Arena Cobra", category: ["سباحة"], price: 3500, old_price: 4200, stock: 40, description: "نظارة سباحة Arena Cobra Ultra مع تقنية مانعة للضباب وحماية UV", short_description: "نظارة سباحة احترافية", sku: "SWIM-001", slug: "arena-cobra", product_type: "physical" },
+      { name: "حبل قفز سرعة احترافي", category: ["لياقة بدنية", "معدات"], price: 1800, stock: 60, description: "حبل قفز سرعة مع مقابض ألمنيوم، كابل فولاذي قابل للتعديل، مثالي للكروسفيت", short_description: "حبل قفز احترافي", sku: "ROPE-001", slug: "speed-jump-rope", product_type: "physical" },
+      { name: "قفازات ملاكمة Everlast Pro", category: ["ملاكمة"], price: 6500, old_price: 8000, stock: 18, description: "قفازات ملاكمة Everlast Pro 12 أوقية، جلد طبيعي، حشوة IMF لأقصى حماية", short_description: "قفازات ملاكمة احترافية", sku: "BOX-001", slug: "everlast-gloves", product_type: "physical", has_variants: true },
+      { name: "حذاء كرة قدم Puma Future", category: ["كرة القدم", "أحذية"], price: 11000, old_price: 13500, stock: 22, description: "حذاء كرة قدم Puma Future Z مع نعل AG للملاعب الاصطناعية، خفيف الوزن", short_description: "حذاء كرة قدم", sku: "FSHOE-001", slug: "puma-future", product_type: "physical", has_variants: true },
+      { name: "سجادة يوغا TPE مزدوجة", category: ["لياقة بدنية", "يوغا"], price: 3200, stock: 45, description: "سجادة يوغا TPE سمك 8مم، مزدوجة الوجه مانعة للانزلاق، صديقة للبيئة", short_description: "سجادة يوغا 8مم", sku: "YOGA-001", slug: "tpe-yoga-mat", product_type: "physical" },
+      { name: "بروتين واي جولد ستاندرد 2.27 كغ", category: ["مكملات غذائية"], price: 14000, old_price: 16500, stock: 12, description: "بروتين واي Optimum Nutrition Gold Standard، 75 حصة، نكهة شوكولاتة", short_description: "بروتين واي 2.27كغ", sku: "PROT-001", slug: "whey-gold-standard", product_type: "physical" },
     ];
 
-    // Insert products without images (use generate-product-images later for AI images)
     const productIds: string[] = [];
     for (const product of products) {
       const { data: inserted, error } = await supabase.from("products").insert({
@@ -79,57 +104,40 @@ serve(async (req) => {
     }
     summary.products = productIds.length;
 
-    // ─── 3. PRODUCT VARIANTS (for has_variants products) ───
-    // Handbag (index 2) - colors
-    if (productIds[2]) {
-      const colors = [
-        { option_values: { اللون: "أسود" }, price: 6500, quantity: 5 },
-        { option_values: { اللون: "بني" }, price: 6500, quantity: 5 },
-        { option_values: { اللون: "أحمر" }, price: 7000, quantity: 5 },
-      ];
-      for (const v of colors) {
-        await supabase.from("product_variants").insert({ product_id: productIds[2], ...v });
-      }
-    }
-
-    // Watch (index 5) - colors
-    if (productIds[5]) {
-      const variants = [
-        { option_values: { اللون: "فضي" }, price: 8500, quantity: 4 },
-        { option_values: { اللون: "ذهبي" }, price: 9000, quantity: 3 },
-        { option_values: { اللون: "أسود" }, price: 8500, quantity: 3 },
-      ];
-      for (const v of variants) {
-        await supabase.from("product_variants").insert({ product_id: productIds[5], ...v });
-      }
-    }
-
-    // Sports shoe (index 7) - sizes
-    if (productIds[7]) {
-      for (const size of [40, 41, 42, 43, 44]) {
+    // ─── 3. PRODUCT VARIANTS ───
+    // Running shoes (0) - sizes
+    if (productIds[0]) {
+      for (const size of [39, 40, 41, 42, 43, 44, 45]) {
         await supabase.from("product_variants").insert({
-          product_id: productIds[7],
-          option_values: { المقاس: size.toString() },
-          price: 9500,
-          quantity: 4,
+          product_id: productIds[0], option_values: { المقاس: size.toString() }, price: 12500, quantity: 4,
         });
       }
     }
-
-    // Cotton shirt (index 13) - sizes + colors
-    if (productIds[13]) {
-      const combos = [
-        { option_values: { المقاس: "M", اللون: "أبيض" }, price: 3200, quantity: 5 },
-        { option_values: { المقاس: "L", اللون: "أبيض" }, price: 3200, quantity: 5 },
-        { option_values: { المقاس: "M", اللون: "أزرق" }, price: 3200, quantity: 5 },
-        { option_values: { المقاس: "L", اللون: "أزرق" }, price: 3200, quantity: 5 },
-        { option_values: { المقاس: "XL", اللون: "أسود" }, price: 3400, quantity: 5 },
-      ];
-      for (const v of combos) {
-        await supabase.from("product_variants").insert({ product_id: productIds[13], ...v });
+    // Nike set (2) - sizes
+    if (productIds[2]) {
+      for (const size of ["S", "M", "L", "XL", "XXL"]) {
+        await supabase.from("product_variants").insert({
+          product_id: productIds[2], option_values: { المقاس: size }, price: 7800, quantity: 5,
+        });
       }
     }
-    summary.product_variants = 16;
+    // Boxing gloves (11) - weight
+    if (productIds[11]) {
+      for (const w of ["10 أوقية", "12 أوقية", "14 أوقية", "16 أوقية"]) {
+        await supabase.from("product_variants").insert({
+          product_id: productIds[11], option_values: { الوزن: w }, price: 6500, quantity: 4,
+        });
+      }
+    }
+    // Football shoes (12) - sizes
+    if (productIds[12]) {
+      for (const size of [39, 40, 41, 42, 43, 44]) {
+        await supabase.from("product_variants").insert({
+          product_id: productIds[12], option_values: { المقاس: size.toString() }, price: 11000, quantity: 3,
+        });
+      }
+    }
+    summary.product_variants = 22;
 
     // ─── 4. VARIATION OPTIONS ───
     const varOptions = [
@@ -137,17 +145,19 @@ serve(async (req) => {
       { variation_type: "اللون", variation_value: "أبيض", color_code: "#FFFFFF" },
       { variation_type: "اللون", variation_value: "أحمر", color_code: "#EF4444" },
       { variation_type: "اللون", variation_value: "أزرق", color_code: "#3B82F6" },
-      { variation_type: "اللون", variation_value: "بني", color_code: "#8B5E3C" },
-      { variation_type: "اللون", variation_value: "فضي", color_code: "#C0C0C0" },
-      { variation_type: "اللون", variation_value: "ذهبي", color_code: "#FFD700" },
+      { variation_type: "اللون", variation_value: "أخضر", color_code: "#22C55E" },
       { variation_type: "المقاس", variation_value: "S" },
       { variation_type: "المقاس", variation_value: "M" },
       { variation_type: "المقاس", variation_value: "L" },
       { variation_type: "المقاس", variation_value: "XL" },
+      { variation_type: "المقاس", variation_value: "XXL" },
+      { variation_type: "المقاس", variation_value: "39" },
       { variation_type: "المقاس", variation_value: "40" },
       { variation_type: "المقاس", variation_value: "41" },
       { variation_type: "المقاس", variation_value: "42" },
       { variation_type: "المقاس", variation_value: "43" },
+      { variation_type: "المقاس", variation_value: "44" },
+      { variation_type: "المقاس", variation_value: "45" },
     ];
     await supabase.from("variation_options").insert(varOptions);
     summary.variation_options = varOptions.length;
@@ -164,11 +174,6 @@ serve(async (req) => {
       { name: "سارة بن حسين", phone: "0668901234", wilaya: "بجاية" },
       { name: "إسماعيل قادري", phone: "0779012345", wilaya: "البليدة" },
       { name: "نورة العربي", phone: "0550123456", wilaya: "بسكرة" },
-      { name: "كريم دحماني", phone: "0661234567", wilaya: "تيزي وزو" },
-      { name: "أمينة مسعودي", phone: "0772345678", wilaya: "الشلف" },
-      { name: "رضا بوعلام", phone: "0553456789", wilaya: "الأغواط" },
-      { name: "ليلى حداد", phone: "0664567890", wilaya: "أدرار" },
-      { name: "عمر بختي", phone: "0775678901", wilaya: "أم البواقي" },
     ];
     const { data: insertedClients } = await supabase.from("clients").insert(
       clientNames.map(c => ({ ...c, status: "active" }))
@@ -176,7 +181,7 @@ serve(async (req) => {
     const clientIds = insertedClients?.map(c => c.id) || [];
     summary.clients = clientIds.length;
 
-    // ─── 6. ORDERS (30 orders) ───
+    // ─── 6. ORDERS ───
     const statuses = ["جديد", "مؤكد", "قيد التوصيل", "تم التسليم", "ملغي"];
     const orderIds: string[] = [];
     for (let i = 0; i < 30; i++) {
@@ -187,7 +192,7 @@ serve(async (req) => {
       const clientIdx = i % clientNames.length;
       const deliveryType = Math.random() > 0.5 ? "home" : "office";
       const shippingCost = deliveryType === "home" ? 800 : 400;
-      const subtotal = Math.floor(Math.random() * 20000) + 2000;
+      const subtotal = Math.floor(Math.random() * 20000) + 3000;
 
       const { data: order, error } = await supabase.from("orders").insert({
         customer_name: clientNames[clientIdx].name,
@@ -230,225 +235,116 @@ serve(async (req) => {
 
     // ─── 8. REVIEWS ───
     const reviewComments = [
-      "منتج ممتاز، أنصح به بشدة",
-      "جودة عالية والتوصيل سريع",
-      "سعر مناسب مقارنة بالسوق",
-      "المنتج مطابق للوصف تماماً",
-      "تجربة شراء رائعة",
-      "سأعيد الشراء بالتأكيد",
-      "جيد لكن التغليف يحتاج تحسين",
-      "خدمة عملاء ممتازة",
-      "وصل في الوقت المحدد",
-      "أفضل متجر تعاملت معه",
+      "منتج ممتاز! جودة عالية واستلمته بسرعة",
+      "أفضل حذاء رياضي اشتريته، مريح جداً للجري",
+      "سعر مناسب مقارنة بالمحلات، والتوصيل سريع",
+      "المنتج مطابق للوصف تماماً، أنصح به بشدة",
+      "تجربة شراء رائعة، خدمة عملاء ممتازة",
+      "استخدمه للتدريب يومياً، جودة لا تُضاهى",
+      "وصل في الوقت المحدد والتغليف ممتاز",
+      "أفضل متجر رياضي في الجزائر بدون منازع",
+      "معدات احترافية بأسعار معقولة، شكراً DZ Sports",
+      "سأعيد الشراء بالتأكيد، 5 نجوم!",
     ];
     const reviewers = ["أحمد م.", "سارة ب.", "محمد ع.", "فاطمة ز.", "يوسف ح.", "نورة ل.", "كريم د.", "مريم ق.", "عمر ب.", "خديجة ر."];
     const reviewInserts = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 25; i++) {
       reviewInserts.push({
         product_id: productIds[i % productIds.length],
-        rating: Math.floor(Math.random() * 3) + 3,
+        rating: Math.floor(Math.random() * 2) + 4, // 4 or 5 stars
         reviewer_name: reviewers[i % reviewers.length],
         comment: reviewComments[i % reviewComments.length],
       });
     }
     await supabase.from("reviews").insert(reviewInserts);
-    summary.reviews = 20;
+    summary.reviews = 25;
 
     // ─── 9. SUPPLIERS ───
     const suppliersData = [
-      { name: "مؤسسة الأمل للإلكترونيات", contact_name: "رشيد بلحاج", contact_phone: "0550111222", contact_email: "amel@email.com", category: "إلكترونيات", status: "active" },
-      { name: "شركة النجاح للأزياء", contact_name: "سمير مقران", contact_phone: "0661222333", contact_email: "najah@email.com", category: "أزياء", status: "active" },
-      { name: "مؤسسة البركة للعسل والتمور", contact_name: "عبد القادر حمدي", contact_phone: "0772333444", contact_email: "baraka@email.com", category: "غذاء", status: "active" },
-      { name: "شركة الجمال للعناية", contact_name: "نادية فرحات", contact_phone: "0553444555", contact_email: "jamal@email.com", category: "جمال", status: "active" },
-      { name: "مؤسسة الدار للأثاث", contact_name: "مصطفى خالدي", contact_phone: "0664555666", contact_email: "dar@email.com", category: "منزل", status: "active" },
+      { name: "مؤسسة الرياضة للمعدات", contact_name: "رشيد بلحاج", contact_phone: "0550111222", contact_email: "sport@email.com", category: "معدات رياضية", status: "active" },
+      { name: "شركة النصر للأحذية", contact_name: "سمير مقران", contact_phone: "0661222333", contact_email: "nasr@email.com", category: "أحذية", status: "active" },
+      { name: "مؤسسة الطاقة للمكملات", contact_name: "عبد القادر حمدي", contact_phone: "0772333444", contact_email: "energy@email.com", category: "مكملات غذائية", status: "active" },
+      { name: "شركة البطل للملابس الرياضية", contact_name: "نادية فرحات", contact_phone: "0553444555", contact_email: "batal@email.com", category: "ملابس رياضية", status: "active" },
     ];
     const { data: insertedSuppliers } = await supabase.from("suppliers").insert(suppliersData).select("id");
     const supplierIds = insertedSuppliers?.map(s => s.id) || [];
     summary.suppliers = supplierIds.length;
 
     // ─── 10. SUPPLIER PRODUCTS ───
-    if (supplierIds.length >= 5) {
+    if (supplierIds.length >= 4) {
       const spData = [
-        { supplier_id: supplierIds[0], product_name: "شاشة سامسونج 6.4\"", unit_price: 15000, quantity_received: 100, remaining_stock: 45, unit: "pcs" },
-        { supplier_id: supplierIds[0], product_name: "بطارية ليثيوم 5000mAh", unit_price: 3000, quantity_received: 200, remaining_stock: 120, unit: "pcs" },
-        { supplier_id: supplierIds[0], product_name: "شاحن USB-C 65W", unit_price: 1200, quantity_received: 150, remaining_stock: 80, unit: "pcs" },
-        { supplier_id: supplierIds[1], product_name: "قماش قطن تركي", unit_price: 800, quantity_received: 500, remaining_stock: 200, unit: "متر" },
-        { supplier_id: supplierIds[1], product_name: "جلد طبيعي إيطالي", unit_price: 2500, quantity_received: 100, remaining_stock: 35, unit: "متر" },
-        { supplier_id: supplierIds[1], product_name: "أزرار معدنية", unit_price: 50, quantity_received: 1000, remaining_stock: 600, unit: "pcs" },
-        { supplier_id: supplierIds[2], product_name: "عسل سدر خام", unit_price: 2000, quantity_received: 200, remaining_stock: 80, unit: "كغ" },
-        { supplier_id: supplierIds[2], product_name: "تمر دقلة نور", unit_price: 800, quantity_received: 500, remaining_stock: 250, unit: "كغ" },
-        { supplier_id: supplierIds[2], product_name: "زيت زيتون بكر", unit_price: 1200, quantity_received: 300, remaining_stock: 150, unit: "لتر" },
-        { supplier_id: supplierIds[3], product_name: "زيت أركان مغربي", unit_price: 3500, quantity_received: 50, remaining_stock: 20, unit: "لتر" },
-        { supplier_id: supplierIds[3], product_name: "عطور خام فرنسية", unit_price: 5000, quantity_received: 30, remaining_stock: 15, unit: "لتر" },
-        { supplier_id: supplierIds[4], product_name: "خشب زان طبيعي", unit_price: 4000, quantity_received: 50, remaining_stock: 18, unit: "متر" },
-        { supplier_id: supplierIds[4], product_name: "ستانلس ستيل 304", unit_price: 2000, quantity_received: 100, remaining_stock: 40, unit: "كغ" },
-        { supplier_id: supplierIds[4], product_name: "طلاء خشب مائي", unit_price: 1500, quantity_received: 80, remaining_stock: 50, unit: "لتر" },
-        { supplier_id: supplierIds[4], product_name: "مسامير وبراغي", unit_price: 100, quantity_received: 2000, remaining_stock: 1200, unit: "pcs" },
+        { supplier_id: supplierIds[0], product_name: "دمبل حديد 10كغ", unit_price: 3000, quantity_received: 100, remaining_stock: 45, unit: "pcs" },
+        { supplier_id: supplierIds[0], product_name: "بار أولمبي 20كغ", unit_price: 8000, quantity_received: 50, remaining_stock: 20, unit: "pcs" },
+        { supplier_id: supplierIds[1], product_name: "نعل أحذية EVA", unit_price: 500, quantity_received: 500, remaining_stock: 200, unit: "pcs" },
+        { supplier_id: supplierIds[1], product_name: "جلد صناعي رياضي", unit_price: 1200, quantity_received: 200, remaining_stock: 80, unit: "متر" },
+        { supplier_id: supplierIds[2], product_name: "بروتين خام", unit_price: 5000, quantity_received: 100, remaining_stock: 40, unit: "كغ" },
+        { supplier_id: supplierIds[2], product_name: "كرياتين مونوهيدرات", unit_price: 3500, quantity_received: 80, remaining_stock: 35, unit: "كغ" },
+        { supplier_id: supplierIds[3], product_name: "قماش دراي فيت", unit_price: 800, quantity_received: 300, remaining_stock: 120, unit: "متر" },
+        { supplier_id: supplierIds[3], product_name: "سحابات رياضية", unit_price: 100, quantity_received: 1000, remaining_stock: 600, unit: "pcs" },
       ];
       await supabase.from("supplier_products").insert(spData);
       summary.supplier_products = spData.length;
     }
 
-    // ─── 11. SUPPLIER TRANSACTIONS ───
-    if (supplierIds.length >= 3) {
-      const stData = [
-        { supplier_id: supplierIds[0], transaction_type: "receipt", description: "استلام شحنة شاشات وبطاريات", items_received: 100, date: "2026-01-15" },
-        { supplier_id: supplierIds[0], transaction_type: "payment", description: "دفعة أولى للمورد", items_given: 0, date: "2026-01-20" },
-        { supplier_id: supplierIds[1], transaction_type: "receipt", description: "استلام أقمشة وجلود", items_received: 200, date: "2026-02-01" },
-        { supplier_id: supplierIds[1], transaction_type: "return", description: "إرجاع قماش معيب", items_given: 20, date: "2026-02-10" },
-        { supplier_id: supplierIds[2], transaction_type: "receipt", description: "شحنة عسل وتمور", items_received: 300, date: "2026-02-15" },
-        { supplier_id: supplierIds[2], transaction_type: "payment", description: "تسوية حساب المورد", items_given: 0, date: "2026-02-20" },
-        { supplier_id: supplierIds[3], transaction_type: "receipt", description: "استلام زيوت ومواد تجميل", items_received: 80, date: "2026-01-25" },
-        { supplier_id: supplierIds[4], transaction_type: "receipt", description: "استلام خشب وأدوات", items_received: 150, date: "2026-03-01" },
-        { supplier_id: supplierIds[4], transaction_type: "payment", description: "دفعة مقدمة للأثاث", items_given: 0, date: "2026-03-05" },
-        { supplier_id: supplierIds[0], transaction_type: "receipt", description: "شحنة شواحن USB", items_received: 150, date: "2026-03-01" },
-      ];
-      await supabase.from("supplier_transactions").insert(stData);
-      summary.supplier_transactions = stData.length;
-    }
-
-    // ─── 12. CONFIRMERS ───
-    const confirmersData = [
-      { name: "سعيد مهدي", phone: "0550999111", email: "said@confirm.dz", type: "private", payment_mode: "per_order", confirmation_price: 100, cancellation_price: 50 },
-      { name: "ليندة حسان", phone: "0661888222", email: "linda@confirm.dz", type: "private", payment_mode: "per_order", confirmation_price: 120, cancellation_price: 60 },
-      { name: "أمين بوعكاز", phone: "0772777333", email: "amine@confirm.dz", type: "private", payment_mode: "monthly", monthly_salary: 35000, confirmation_price: 0 },
-    ];
-    await supabase.from("confirmers").insert(confirmersData);
-    summary.confirmers = 3;
-
-    // ─── 13. COUPONS ───
+    // ─── 11. COUPONS ───
     const couponsData = [
-      { code: "WELCOME10", discount_type: "percentage", discount_value: 10, is_active: true, expiry_date: "2026-12-31T23:59:59Z" },
-      { code: "SALE500", discount_type: "fixed", discount_value: 500, is_active: true, expiry_date: "2026-06-30T23:59:59Z" },
-      { code: "SUMMER20", discount_type: "percentage", discount_value: 20, is_active: true, expiry_date: "2026-09-01T23:59:59Z" },
+      { code: "SPORT10", discount_type: "percentage", discount_value: 10, is_active: true, expiry_date: "2026-12-31T23:59:59Z" },
+      { code: "WELCOME500", discount_type: "fixed", discount_value: 500, is_active: true, expiry_date: "2026-06-30T23:59:59Z" },
+      { code: "FITNESS20", discount_type: "percentage", discount_value: 20, is_active: true, expiry_date: "2026-09-01T23:59:59Z" },
       { code: "FREESHIP", discount_type: "fixed", discount_value: 800, is_active: true, expiry_date: "2026-12-31T23:59:59Z" },
-      { code: "VIP15", discount_type: "percentage", discount_value: 15, is_active: false },
     ];
     await supabase.from("coupons").insert(couponsData);
-    summary.coupons = 5;
+    summary.coupons = 4;
 
-    // ─── 14. LEADS ───
+    // ─── 12. LEADS ───
     const leadsData = [
       { name: "هشام قاسمي", phone: "0550111000", status: "جديد", source: "فيسبوك" },
       { name: "رانيا بلخير", phone: "0661222000", status: "جديد", source: "موقع" },
       { name: "توفيق مرابط", phone: "0772333000", status: "مهتم", source: "إنستغرام" },
       { name: "صبرينة خليفي", phone: "0553444000", status: "مهتم", source: "فيسبوك" },
       { name: "بلال حماني", phone: "0664555000", status: "تم التحويل", source: "موقع" },
-      { name: "إيمان بوراس", phone: "0775666000", status: "جديد", source: "واتساب" },
-      { name: "عادل شنتوف", phone: "0556777000", status: "ملغي", source: "فيسبوك" },
-      { name: "حنان دباغ", phone: "0667888000", status: "مهتم", source: "موقع" },
-      { name: "جمال العيد", phone: "0778999000", status: "جديد", source: "إنستغرام" },
-      { name: "أسماء بوعزيز", phone: "0559000111", status: "تم التحويل", source: "واتساب" },
     ];
     await supabase.from("leads").insert(leadsData);
-    summary.leads = 10;
+    summary.leads = 5;
 
-    // ─── 15. DELIVERY COMPANIES ───
+    // ─── 13. CONFIRMERS ───
+    const confirmersData = [
+      { name: "سعيد مهدي", phone: "0550999111", email: "said@confirm.dz", type: "private", payment_mode: "per_order", confirmation_price: 100, cancellation_price: 50 },
+      { name: "ليندة حسان", phone: "0661888222", email: "linda@confirm.dz", type: "private", payment_mode: "per_order", confirmation_price: 120, cancellation_price: 60 },
+    ];
+    await supabase.from("confirmers").insert(confirmersData);
+    summary.confirmers = 2;
+
+    // ─── 14. DELIVERY COMPANIES ───
     const dcData = [
       { name: "ZR Express", is_active: true, is_builtin: false },
       { name: "Ecotrack", is_active: true, is_builtin: false },
     ];
     const { data: newDCs } = await supabase.from("delivery_companies").insert(dcData).select("id");
-    const allDCIds = [
-      "3742a603-e332-4225-bb9c-f6b147eb33de", // yalidin
-      ...(newDCs?.map(d => d.id) || []),
-    ];
     summary.delivery_companies = dcData.length;
 
-    // ─── 16. DELIVERY COMPANY PRICES ───
-    let dcPriceCount = 0;
-    for (const dcId of allDCIds) {
-      for (const wId of wilayaIds.slice(0, 9)) {
-        const baseHome = Math.floor(Math.random() * 400) + 600;
-        const baseOffice = baseHome - 200;
-        await supabase.from("delivery_company_prices").insert({
-          company_id: dcId,
-          wilaya_id: wId,
-          price_home: baseHome,
-          price_office: baseOffice,
-          return_price: Math.floor(baseHome * 0.5),
-        });
-        dcPriceCount++;
-      }
-    }
-    summary.delivery_company_prices = dcPriceCount;
-
-    // ─── 17. FACEBOOK PIXELS ───
-    await supabase.from("facebook_pixels").insert([
-      { pixel_id: "123456789012345", name: "بيكسل الموقع الرئيسي", is_active: true },
-      { pixel_id: "987654321098765", name: "بيكسل إعادة الاستهداف", is_active: false },
-    ]);
-    summary.facebook_pixels = 2;
-
-    // ─── 18. ABANDONED ORDERS ───
-    const abandonedData = [
-      { customer_name: "علي بوشارب", customer_phone: "0550222333", customer_wilaya: "الجزائر", cart_items: JSON.stringify([{ name: "هاتف ذكي", qty: 1, price: 45000 }]), cart_total: 45000, item_count: 1 },
-      { customer_name: "نادية قرمي", customer_phone: "0661333444", customer_wilaya: "وهران", cart_items: JSON.stringify([{ name: "حقيبة جلدية", qty: 1, price: 6500 }, { name: "عطر", qty: 1, price: 7000 }]), cart_total: 13500, item_count: 2 },
-      { customer_name: "حسام بريك", customer_phone: "0772444555", customer_wilaya: "قسنطينة", cart_items: JSON.stringify([{ name: "لابتوب", qty: 1, price: 85000 }]), cart_total: 85000, item_count: 1 },
-      { customer_name: "وفاء مخلوفي", customer_phone: "0553555666", customer_wilaya: "سطيف", cart_items: JSON.stringify([{ name: "كريم مرطب", qty: 2, price: 4400 }]), cart_total: 4400, item_count: 2 },
-      { customer_name: "ياسين عمران", customer_phone: "0664666777", customer_wilaya: "باتنة", cart_items: JSON.stringify([{ name: "ساعة رجالية", qty: 1, price: 8500 }]), cart_total: 8500, item_count: 1 },
-    ];
-    await supabase.from("abandoned_orders").insert(abandonedData);
-    summary.abandoned_orders = 5;
-
-    // ─── 19. RETURN REASONS ───
+    // ─── 15. RETURN REASONS ───
     const returnReasons = [
       { label_ar: "المنتج تالف أو مكسور", fault_type: "seller_fault", requires_photos: true, position: 1 },
       { label_ar: "المنتج لا يطابق الوصف", fault_type: "seller_fault", requires_photos: true, position: 2 },
       { label_ar: "مقاس غير مناسب", fault_type: "customer_fault", requires_photos: false, position: 3 },
-      { label_ar: "لون مختلف عما طلبت", fault_type: "seller_fault", requires_photos: true, position: 4 },
-      { label_ar: "غيرت رأيي", fault_type: "customer_fault", requires_photos: false, position: 5 },
+      { label_ar: "غيرت رأيي", fault_type: "customer_fault", requires_photos: false, position: 4 },
     ];
     await supabase.from("return_reasons").insert(returnReasons);
-    summary.return_reasons = 5;
+    summary.return_reasons = 4;
 
-    // ─── 20. RETURN SETTINGS ───
+    // ─── 16. RETURN SETTINGS ───
     const { count: rsCount } = await supabase.from("return_settings").select("*", { count: "exact", head: true });
     if (!rsCount || rsCount === 0) {
       await supabase.from("return_settings").insert({
-        is_returns_enabled: true,
-        return_window_days: 7,
-        require_return_photos: true,
-        max_photos_per_return: 5,
-        allow_refund: true,
-        allow_exchange: true,
-        allow_store_credit: true,
+        is_returns_enabled: true, return_window_days: 7, require_return_photos: true,
+        max_photos_per_return: 5, allow_refund: true, allow_exchange: true, allow_store_credit: true,
         return_policy_text: "يمكنك إرجاع المنتج خلال 7 أيام من تاريخ الاستلام بشرط أن يكون في حالته الأصلية.",
       });
     }
     summary.return_settings = 1;
 
-    // ─── 21. RETURN REQUESTS ───
-    if (orderIds.length >= 5 && orderItemIds.length >= 5) {
-      const { data: rr1 } = await supabase.from("return_requests").insert({
-        order_id: orderIds[3],
-        customer_name: clientNames[3].name,
-        customer_phone: clientNames[3].phone,
-        return_number: "placeholder",
-        resolution_type: "refund",
-        status: "requested",
-        total_refund_amount: products[3].price,
-        net_refund_amount: products[3].price - 400,
-        return_shipping_cost: 400,
-        shipping_paid_by: "customer",
-      }).select("id").single();
-
-      if (rr1) {
-        await supabase.from("return_items").insert({
-          return_request_id: rr1.id,
-          order_item_id: orderItemIds[3],
-          product_id: productIds[3],
-          product_name: products[3].name,
-          quantity_ordered: 1,
-          quantity_returned: 1,
-          unit_price: products[3].price,
-          item_total: products[3].price,
-        });
-      }
-      summary.return_requests = 1;
-    }
-
-    // ─── 22. PRODUCT COSTS ───
+    // ─── 17. PRODUCT COSTS ───
     const costInserts = productIds.slice(0, 10).map((pid, i) => ({
       product_id: pid,
       purchase_cost: Math.floor(products[i].price * 0.4),
@@ -460,21 +356,31 @@ serve(async (req) => {
     await supabase.from("product_costs").insert(costInserts);
     summary.product_costs = costInserts.length;
 
-    // ─── 23. CONFIRMATION SETTINGS ───
+    // ─── 18. CONFIRMATION SETTINGS ───
     const { count: csCount } = await supabase.from("confirmation_settings").select("*", { count: "exact", head: true });
     if (!csCount || csCount === 0) {
       await supabase.from("confirmation_settings").insert({
-        assignment_mode: "manual",
-        max_call_attempts: 3,
-        auto_timeout_minutes: 30,
-        working_hours_start: "08:00",
-        working_hours_end: "20:00",
+        assignment_mode: "manual", max_call_attempts: 3, auto_timeout_minutes: 30,
+        working_hours_start: "08:00", working_hours_end: "20:00",
       });
     }
     summary.confirmation_settings = 1;
 
+    // ─── 19. ABANDONED ORDERS ───
+    const abandonedData = [
+      { customer_name: "علي بوشارب", customer_phone: "0550222333", customer_wilaya: "الجزائر", cart_items: JSON.stringify([{ name: "حذاء جري Nike", qty: 1, price: 12500 }]), cart_total: 12500, item_count: 1 },
+      { customer_name: "نادية قرمي", customer_phone: "0661333444", customer_wilaya: "وهران", cart_items: JSON.stringify([{ name: "بنش بريس", qty: 1, price: 35000 }]), cart_total: 35000, item_count: 1 },
+      { customer_name: "حسام بريك", customer_phone: "0772444555", customer_wilaya: "قسنطينة", cart_items: JSON.stringify([{ name: "ساعة Garmin", qty: 1, price: 25000 }]), cart_total: 25000, item_count: 1 },
+    ];
+    await supabase.from("abandoned_orders").insert(abandonedData);
+    summary.abandoned_orders = 3;
+
     console.log("✅ Seed complete:", summary);
-    return new Response(JSON.stringify({ success: true, summary }), {
+    return new Response(JSON.stringify({
+      success: true,
+      summary,
+      admin: { email: adminEmail, password: adminPassword },
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
