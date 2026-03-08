@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import ProductCard from '@/components/ProductCard';
 import { ProductGridSkeleton } from '@/components/LoadingSkeleton';
 import { useCategories } from '@/hooks/useCategories';
-import heroSportsImage from '@/assets/hero-sports.jpg';
+import heroSportsImage from '@/assets/hero-sports-v2.jpg';
 import AnimatedSection from '@/components/AnimatedSection';
 import MinimalTemplate from '@/components/templates/MinimalTemplate';
 import BoldTemplate from '@/components/templates/BoldTemplate';
