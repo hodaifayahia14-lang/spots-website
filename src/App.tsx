@@ -133,6 +133,7 @@ const App = () => (
             <Route path="/admin/clients" element={<LanguageProvider><AdminLayout><AdminClientsPage /></AdminLayout></LanguageProvider>} />
             <Route path="/admin/clients/:id" element={<LanguageProvider><AdminLayout><AdminClientDetailPage /></AdminLayout></LanguageProvider>} />
             <Route path="/admin/delivery" element={<LanguageProvider><AdminLayout><AdminDeliveryPage /></AdminLayout></LanguageProvider>} />
+            <Route path="/admin/statistics" element={<LanguageProvider><AdminLayout><AdminStatisticsPage /></AdminLayout></LanguageProvider>} />
             <Route path="/admin/settings" element={<LanguageProvider><AdminLayout><AdminSettingsPage /></AdminLayout></LanguageProvider>} />
             <Route path="/admin/settings/identity" element={<LanguageProvider><AdminLayout><AdminIdentityPage /></AdminLayout></LanguageProvider>} />
             <Route path="/admin/settings/payment" element={<LanguageProvider><AdminLayout><AdminPaymentPage /></AdminLayout></LanguageProvider>} />
