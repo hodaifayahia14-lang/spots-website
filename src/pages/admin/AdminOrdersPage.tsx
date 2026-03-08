@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Eye, ExternalLink, AlertTriangle, MoreHorizontal, PackageCheck, Truck, Clock, Ban, PackageOpen, CheckCircle, Filter, ChevronDown, ChevronUp, Loader2, CheckSquare, Zap, Plus, Download, Trash2, Upload } from 'lucide-react';
 import OrderImportDialog from '@/components/admin/OrderImportDialog';
+import TablePagination from '@/components/admin/TablePagination';
 import { formatPrice, formatDate } from '@/lib/format';
 import { useTranslation } from '@/i18n';
 
@@ -64,6 +65,8 @@ export default function AdminOrdersPage() {
   const [selectedCompanyId, setSelectedCompanyId] = useState('');
   const [exportingDelivery, setExportingDelivery] = useState(false);
   const [importDialog, setImportDialog] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
 
   const { data: orders } = useQuery({
     queryKey: ['admin-orders'],
@@ -212,6 +215,9 @@ export default function AdminOrdersPage() {
     });
   }, [orders, search, statusFilter, wilayaFilter, paymentFilter, dateFrom, dateTo, minTotal, maxTotal, sourceFilter]);
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   const handleQuickStatus = (orderId: string, status: string) => {
     updateStatus.mutate({ id: orderId, status });
   };
@@ -260,7 +266,7 @@ export default function AdminOrdersPage() {
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <div className="relative flex-1 min-w-0">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('orders.searchPlaceholder')} className="pr-10 font-cairo h-9 sm:h-10" />
+              <Input value={search} onChange={e => { setSearch(e.target.value); setCurrentPage(1); }} placeholder={t('orders.searchPlaceholder')} className="pr-10 font-cairo h-9 sm:h-10" />
             </div>
             <div className="flex gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -421,7 +427,7 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(o => {
+              {paginatedFiltered.map(o => {
                 const wilayaName = (o as any).wilayas?.name;
                 const cancelRate = wilayaName ? riskyWilayas.get(wilayaName) : undefined;
                 const statusCfg = STATUS_CONFIG[o.status || 'جديد'] || STATUS_CONFIG['جديد'];
@@ -501,7 +507,7 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(o => {
+              {paginatedFiltered.map(o => {
                 const wilayaName = (o as any).wilayas?.name;
                 const statusCfg = STATUS_CONFIG[o.status || 'جديد'] || STATUS_CONFIG['جديد'];
                 const StatusIcon = statusCfg.icon;
@@ -559,7 +565,7 @@ export default function AdminOrdersPage() {
               <span className="font-cairo text-xs text-muted-foreground">{t('orders.matchingOrders').replace('{n}', String(filtered.length))}</span>
             </div>
           )}
-          {filtered.map(o => {
+          {paginatedFiltered.map(o => {
             const wilayaName = (o as any).wilayas?.name;
             const statusCfg = STATUS_CONFIG[o.status || 'جديد'] || STATUS_CONFIG['جديد'];
             const StatusIcon = statusCfg.icon;
@@ -615,6 +621,8 @@ export default function AdminOrdersPage() {
             );
           })}
         </div>
+
+        <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
 
         <Dialog open={!!selectedOrder} onOpenChange={open => !open && setSelectedOrder(null)}>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto mx-2 sm:mx-auto">

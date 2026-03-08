@@ -17,6 +17,7 @@ import {
   Layers,
 } from 'lucide-react';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -57,6 +58,8 @@ export default function AdminCostsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   // Fetch products including has_variants flag
   const { data: products, isLoading: loadingProducts } = useQuery({
@@ -118,6 +121,9 @@ export default function AdminCostsPage() {
     const q = search.toLowerCase();
     return productsWithCosts.filter(p => p.name.toLowerCase().includes(q));
   }, [productsWithCosts, search]);
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   // KPIs
   const kpis = useMemo(() => {
@@ -240,7 +246,7 @@ export default function AdminCostsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(p => {
+                {paginatedFiltered.map(p => {
                   const isVariant = p.has_variants;
                   const hasCost = isVariant ? p.variantCostCount > 0 : !!p.baseCost;
                   const totalCost = p.baseCost?.total_cost_per_unit ?? 0;
@@ -365,7 +371,7 @@ export default function AdminCostsPage() {
                 </CardContent>
               </Card>
             ) : (
-              filtered.map(p => {
+              paginatedFiltered.map(p => {
                 const isVariant = p.has_variants;
                 const hasCost = isVariant ? p.variantCostCount > 0 : !!p.baseCost;
                 const totalCost = p.baseCost?.total_cost_per_unit ?? 0;
@@ -471,6 +477,7 @@ export default function AdminCostsPage() {
           </div>
         </>
       )}
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
     </div>
   );
 }

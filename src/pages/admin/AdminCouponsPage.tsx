@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Plus, Pencil, Trash2, Package, Search, Tag, CheckCircle, XCircle, Wand2 } from 'lucide-react';
 import { formatDate } from '@/lib/format';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 export default function AdminCouponsPage() {
   const { t } = useTranslation();
@@ -25,6 +26,8 @@ export default function AdminCouponsPage() {
   const [form, setForm] = useState({ code: '', discount_type: 'percentage', discount_value: '', expiry_date: '', is_active: true });
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   // Auto-generate coupon code
   const generateCode = () => {
@@ -147,6 +150,9 @@ export default function AdminCouponsPage() {
     return (coupons || []).filter(c => c.code.toLowerCase().includes(q));
   }, [coupons, searchQuery]);
 
+  const totalPages = Math.ceil(filteredCoupons.length / ITEMS_PER_PAGE);
+  const paginatedCoupons = filteredCoupons.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap justify-between items-center gap-2">
@@ -191,7 +197,7 @@ export default function AdminCouponsPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredCoupons.map(c => {
+            {paginatedCoupons.map(c => {
               const productCount = getCouponProductCount(c.id);
               return (
                 <tr key={c.id} className="border-b hover:bg-muted/50">
@@ -220,7 +226,7 @@ export default function AdminCouponsPage() {
 
       {/* Mobile Cards */}
       <div className="md:hidden space-y-3">
-        {filteredCoupons.map(c => {
+        {paginatedCoupons.map(c => {
           const productCount = getCouponProductCount(c.id);
           return (
             <div key={c.id} className="bg-card border rounded-xl p-4 space-y-2">
@@ -242,6 +248,8 @@ export default function AdminCouponsPage() {
           );
         })}
       </div>
+
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filteredCoupons.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md">

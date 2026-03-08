@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Users, Plus, Search, Phone, MapPin, Eye, Trash2, Edit, DollarSign, Package, Wallet, Download, ArrowUpDown } from 'lucide-react';
 import { toast } from 'sonner';
+import TablePagination from '@/components/admin/TablePagination';
 
 function useAllClientTransactions() {
   return useQuery({
@@ -44,6 +45,8 @@ export default function AdminClientsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState<'name' | 'balance'>('name');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   const openAdd = () => {
     setEditingClient(null);
@@ -104,6 +107,9 @@ export default function AdminClientsPage() {
     return result;
   }, [clients, search, statusFilter, sortBy, sortDir, allTx]);
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   const totalOwed = (clients ?? []).reduce((s, c) => s + Math.max(0, getClientBalance(c.id)), 0);
   const totalCollected = (allTx ?? [])
     .filter(tx => tx.transaction_type === 'payment_received')
@@ -150,7 +156,7 @@ export default function AdminClientsPage() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute top-1/2 -translate-y-1/2 start-3 w-4 h-4 text-muted-foreground" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('clients.searchPlaceholder')} className="ps-9 font-cairo" />
+          <Input value={search} onChange={e => { setSearch(e.target.value); setCurrentPage(1); }} placeholder={t('clients.searchPlaceholder')} className="ps-9 font-cairo" />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[140px] font-cairo"><SelectValue /></SelectTrigger>
@@ -185,7 +191,7 @@ export default function AdminClientsPage() {
         </CardContent></Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(c => {
+          {paginatedFiltered.map(c => {
             const balance = getClientBalance(c.id);
             return (
               <Card key={c.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/admin/clients/${c.id}`)}>
@@ -214,6 +220,8 @@ export default function AdminClientsPage() {
           })}
         </div>
       )}
+
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

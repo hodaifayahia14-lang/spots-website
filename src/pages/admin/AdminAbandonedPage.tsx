@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Search, Phone, ShoppingCart, Trash2, StickyNote, ArrowRight, ChevronDown, ChevronUp, PackageX, Users, DollarSign } from 'lucide-react';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 interface AbandonedOrder {
   id: string;
@@ -38,6 +39,8 @@ export default function AdminAbandonedPage() {
   const [convertDialog, setConvertDialog] = useState<AbandonedOrder | null>(null);
   const [converting, setConverting] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   const STATUS_MAP: Record<string, { label: string; color: string }> = {
     abandoned: { label: t('abandoned.statusAbandoned'), color: 'bg-destructive/10 text-destructive' },
@@ -62,6 +65,9 @@ export default function AdminAbandonedPage() {
     const s = search.trim().toLowerCase();
     return a.customer_name.toLowerCase().includes(s) || a.customer_phone.includes(s);
   }) || [];
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   // KPI calculations
   const abandonedCount = abandoned?.filter(a => a.status === 'abandoned').length || 0;
@@ -205,7 +211,7 @@ export default function AdminAbandonedPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map(a => {
+          {paginatedFiltered.map(a => {
             const statusInfo = STATUS_MAP[a.status] || STATUS_MAP.abandoned;
             const isExpanded = expandedId === a.id;
             return (
@@ -281,6 +287,8 @@ export default function AdminAbandonedPage() {
           })}
         </div>
       )}
+
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
 
       {/* Note Dialog */}
       <Dialog open={!!noteDialog} onOpenChange={o => !o && setNoteDialog(null)}>

@@ -6,6 +6,7 @@ import SupplierKPICards from '@/components/admin/suppliers/SupplierKPICards';
 import SupplierDrawer from '@/components/admin/suppliers/SupplierDrawer';
 import SupplierCard from '@/components/admin/suppliers/SupplierCard';
 import { Button } from '@/components/ui/button';
+import TablePagination from '@/components/admin/TablePagination';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -35,6 +36,8 @@ export default function AdminSuppliersPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editSupplier, setEditSupplier] = useState<SupplierWithBalance | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   const filtered = useMemo(() => {
     if (!suppliers) return [];
@@ -44,6 +47,9 @@ export default function AdminSuppliersPage() {
       return matchSearch && matchStatus;
     });
   }, [suppliers, search, statusFilter]);
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const handleViewToggle = (mode: 'table' | 'grid') => {
     setViewMode(mode);
@@ -96,7 +102,7 @@ export default function AdminSuppliersPage() {
           <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none ${dir === 'rtl' ? 'right-3' : 'left-3'}`} />
           <Input
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
             placeholder={t('suppliers.searchPlaceholder')}
             className={`font-cairo ${dir === 'rtl' ? 'pr-9' : 'pl-9'}`}
           />
@@ -149,7 +155,7 @@ export default function AdminSuppliersPage() {
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(s => <SupplierCard key={s.id} supplier={s} />)}
+          {paginatedFiltered.map(s => <SupplierCard key={s.id} supplier={s} />)}
         </div>
       ) : (
         <div className="bg-card rounded-xl border overflow-hidden">
@@ -168,7 +174,7 @@ export default function AdminSuppliersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map(s => (
+                {paginatedFiltered.map(s => (
                   <TableRow key={s.id} className="row-accent cursor-pointer" onClick={() => navigate(`/admin/suppliers/${s.id}`)}>
                     <TableCell className="font-cairo font-medium">{s.name}</TableCell>
                     <TableCell className="font-cairo text-muted-foreground text-sm">{s.category || '—'}</TableCell>
@@ -218,6 +224,8 @@ export default function AdminSuppliersPage() {
           </div>
         </div>
       )}
+
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
 
       <SupplierDrawer
         open={drawerOpen}

@@ -14,6 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Plus, Trash2, Pencil, UserCheck, Search, ToggleLeft, ToggleRight, Settings, Users, UserPlus, Eye, EyeOff } from 'lucide-react';
 import { formatDate } from '@/lib/format';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 const TYPE_OPTIONS = [
   { value: 'private', label: 'خاص', color: 'bg-primary/10 text-primary' },
@@ -43,6 +44,8 @@ export default function AdminConfirmersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('الكل');
   const [filterStatus, setFilterStatus] = useState('الكل');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   // Tab 1: Add form state
   const [addName, setAddName] = useState('');
@@ -239,6 +242,9 @@ export default function AdminConfirmersPage() {
       return matchSearch && matchType && matchStatus;
     });
   }, [confirmers, searchQuery, filterType, filterStatus]);
+
+  const totalPages = Math.ceil(filteredConfirmers.length / ITEMS_PER_PAGE);
+  const paginatedConfirmers = filteredConfirmers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const counts = useMemo(() => {
     const all = confirmers || [];
@@ -472,7 +478,7 @@ export default function AdminConfirmersPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {filteredConfirmers.map(c => (
+                    {paginatedConfirmers.map(c => (
                       <tr key={c.id} className={`hover:bg-muted/30 transition-colors group ${c.status === 'inactive' ? 'opacity-50' : ''}`}>
                         <td className="p-3">
                           <div className="font-cairo font-medium text-foreground">{c.name}</div>
@@ -510,7 +516,7 @@ export default function AdminConfirmersPage() {
 
               {/* Mobile Cards */}
               <div className="md:hidden space-y-3">
-                {filteredConfirmers.map(c => (
+                {paginatedConfirmers.map(c => (
                   <div key={c.id} className={`bg-card border rounded-xl p-4 space-y-2 ${c.status === 'inactive' ? 'opacity-50' : ''}`}>
                     <div className="flex items-center justify-between">
                       <div>
@@ -551,6 +557,7 @@ export default function AdminConfirmersPage() {
               <p className="font-cairo text-muted-foreground font-medium">لا يوجد مؤكدين بعد</p>
             </div>
           )}
+          <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filteredConfirmers.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
         </TabsContent>
 
         {/* ===== TAB 3: Confirmation Settings ===== */}

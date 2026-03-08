@@ -15,6 +15,7 @@ import {
   PackageCheck, AlertTriangle, Plus, Loader2, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 const RETURN_STATUSES = ['requested', 'approved', 'rejected', 'pickup_scheduled', 'in_transit', 'received', 'inspected', 'completed', 'cancelled', 'disputed'];
 
@@ -59,6 +60,8 @@ export default function AdminReturnsPage() {
   const [typeFilter, setTypeFilter] = useState('الكل');
   const [selectedReturn, setSelectedReturn] = useState<any>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   // Fetch returns with joins
   const { data: returns, isLoading } = useQuery({
@@ -126,6 +129,9 @@ export default function AdminReturnsPage() {
     });
   }, [returns, search, statusFilter, typeFilter]);
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedFiltered = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   // Status update mutation
   const updateReturn = useMutation({
     mutationFn: async (params: { id: string; updates: Record<string, any>; newStatus?: string; oldStatus?: string; reason?: string }) => {
@@ -182,7 +188,7 @@ export default function AdminReturnsPage() {
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('returns.searchPlaceholder')} className="pr-10 font-cairo" />
+          <Input value={search} onChange={e => { setSearch(e.target.value); setCurrentPage(1); }} placeholder={t('returns.searchPlaceholder')} className="pr-10 font-cairo" />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-44 font-cairo"><SelectValue /></SelectTrigger>
@@ -229,7 +235,7 @@ export default function AdminReturnsPage() {
               <tr><td colSpan={9} className="p-8 text-center font-cairo text-muted-foreground">{t('common.loading')}</td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={9} className="p-8 text-center font-cairo text-muted-foreground">{t('returns.noReturns')}</td></tr>
-            ) : filtered.map(r => {
+            ) : paginatedFiltered.map(r => {
               const style = STATUS_STYLE[r.status] || STATUS_STYLE.requested;
               const StatusIcon = style.icon;
               return (
@@ -270,7 +276,7 @@ export default function AdminReturnsPage() {
           <div className="p-8 text-center font-cairo text-muted-foreground">{t('common.loading')}</div>
         ) : filtered.length === 0 ? (
           <div className="bg-card border rounded-lg p-8 text-center font-cairo text-muted-foreground">{t('returns.noReturns')}</div>
-        ) : filtered.map(r => {
+        ) : paginatedFiltered.map(r => {
           const style = STATUS_STYLE[r.status] || STATUS_STYLE.requested;
           const StatusIcon = style.icon;
           return (
@@ -311,6 +317,8 @@ export default function AdminReturnsPage() {
           );
         })}
       </div>
+
+      <TablePagination currentPage={currentPage} totalPages={totalPages} totalItems={filtered.length} itemsPerPage={ITEMS_PER_PAGE} onPageChange={setCurrentPage} />
 
       {/* Detail Dialog */}
       {selectedReturn && (
