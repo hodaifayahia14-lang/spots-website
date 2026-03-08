@@ -565,7 +565,7 @@ export default function AdminOrdersPage() {
               <span className="font-cairo text-xs text-muted-foreground">{t('orders.matchingOrders').replace('{n}', String(filtered.length))}</span>
             </div>
           )}
-          {filtered.map(o => {
+          {paginatedFiltered.map(o => {
             const wilayaName = (o as any).wilayas?.name;
             const statusCfg = STATUS_CONFIG[o.status || 'جديد'] || STATUS_CONFIG['جديد'];
             const StatusIcon = statusCfg.icon;
