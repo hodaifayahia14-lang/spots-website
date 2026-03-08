@@ -197,7 +197,7 @@ export default function AdminCouponsPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredCoupons.map(c => {
+            {paginatedCoupons.map(c => {
               const productCount = getCouponProductCount(c.id);
               return (
                 <tr key={c.id} className="border-b hover:bg-muted/50">
