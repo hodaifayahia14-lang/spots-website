@@ -36,6 +36,8 @@ export default function AdminSuppliersPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editSupplier, setEditSupplier] = useState<SupplierWithBalance | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   const filtered = useMemo(() => {
     if (!suppliers) return [];
