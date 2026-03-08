@@ -235,7 +235,7 @@ export default function AdminReturnsPage() {
               <tr><td colSpan={9} className="p-8 text-center font-cairo text-muted-foreground">{t('common.loading')}</td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={9} className="p-8 text-center font-cairo text-muted-foreground">{t('returns.noReturns')}</td></tr>
-            ) : filtered.map(r => {
+            ) : paginatedFiltered.map(r => {
               const style = STATUS_STYLE[r.status] || STATUS_STYLE.requested;
               const StatusIcon = style.icon;
               return (
