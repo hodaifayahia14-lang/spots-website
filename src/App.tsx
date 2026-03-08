@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import ScrollToTop from "@/components/ScrollToTop";
+import ScrollToTopOnNavigate from "@/components/ScrollToTopOnNavigate";
 import AdminLayout from "@/components/AdminLayout";
 import Index from "./pages/Index";
 import ProductsPage from "./pages/ProductsPage";
