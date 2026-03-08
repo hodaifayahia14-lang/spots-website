@@ -427,7 +427,7 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(o => {
+              {paginatedFiltered.map(o => {
                 const wilayaName = (o as any).wilayas?.name;
                 const cancelRate = wilayaName ? riskyWilayas.get(wilayaName) : undefined;
                 const statusCfg = STATUS_CONFIG[o.status || 'جديد'] || STATUS_CONFIG['جديد'];
