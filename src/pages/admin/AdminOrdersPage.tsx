@@ -254,90 +254,90 @@ export default function AdminOrdersPage() {
 
   return (
     <TooltipProvider>
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {/* Search & basic filter */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('orders.searchPlaceholder')} className="pr-10 font-cairo" />
+        <div className="flex flex-col gap-2 sm:gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <div className="relative flex-1 min-w-0">
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('orders.searchPlaceholder')} className="pr-10 font-cairo h-9 sm:h-10" />
+            </div>
+            <div className="flex gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-full sm:w-36 font-cairo h-9 sm:h-10 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="الكل" className="font-cairo">{t('common.all')}</SelectItem>
+                  {STATUSES.map(s => {
+                    const cfg = STATUS_CONFIG[s];
+                    const Icon = cfg.icon;
+                    return (
+                      <SelectItem key={s} value={s} className="font-cairo">
+                        <span className="flex items-center gap-2">
+                          <Icon className={`w-3.5 h-3.5 ${cfg.color}`} />
+                          {t(STATUS_KEYS[s])}
+                        </span>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              <Select value={sourceFilter} onValueChange={setSourceFilter}>
+                <SelectTrigger className="w-full sm:w-36 font-cairo h-9 sm:h-10 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="font-cairo">{t('orders.sourceAll')}</SelectItem>
+                  <SelectItem value="website" className="font-cairo">🌐 {t('orders.sourceWebsite')}</SelectItem>
+                  <SelectItem value="landing" className="font-cairo">🚀 {t('orders.sourceLanding')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-40 font-cairo"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="الكل" className="font-cairo">{t('common.all')}</SelectItem>
-              {STATUSES.map(s => {
-                const cfg = STATUS_CONFIG[s];
-                const Icon = cfg.icon;
-                return (
-                  <SelectItem key={s} value={s} className="font-cairo">
-                    <span className="flex items-center gap-2">
-                      <Icon className={`w-3.5 h-3.5 ${cfg.color}`} />
-                      {t(STATUS_KEYS[s])}
-                    </span>
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
-          <Select value={sourceFilter} onValueChange={setSourceFilter}>
-            <SelectTrigger className="w-full sm:w-40 font-cairo"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all" className="font-cairo">{t('orders.sourceAll')}</SelectItem>
-              <SelectItem value="website" className="font-cairo">🌐 {t('orders.sourceWebsite')}</SelectItem>
-              <SelectItem value="landing" className="font-cairo">🚀 {t('orders.sourceLanding')}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button
-            variant={showAdvanced ? 'default' : 'outline'}
-            className="font-cairo gap-1.5"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-          >
-            <Filter className="w-4 h-4" />
-            {t('orders.advancedFilter')}
-            {hasAdvancedFilters && <span className="w-2 h-2 rounded-full bg-destructive" />}
-            {showAdvanced ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-           </Button>
-          <Button className="font-cairo gap-1.5" onClick={() => navigate('/admin/orders/create')}>
-            <Plus className="w-4 h-4" /> إنشاء طلب
-          </Button>
-          <Button
-            variant="outline"
-            className="font-cairo gap-1.5"
-            onClick={() => setImportDialog(true)}
-          >
-            <Upload className="w-4 h-4" /> {t('import.uploadOrders')}
-          </Button>
-          <Button
-            variant="outline"
-            className="font-cairo gap-1.5"
-            onClick={() => {
-              if (filtered.length === 0) return;
-              setSelectedIds(new Set(filtered.map(o => o.id)));
-              setDeliveryDialog(true);
-            }}
-          >
-            <Truck className="w-4 h-4" /> {t('delivery.exportToDelivery')}
-          </Button>
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+            <Button
+              variant={showAdvanced ? 'default' : 'outline'}
+              size="sm"
+              className="font-cairo gap-1 text-xs whitespace-nowrap shrink-0"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              {t('orders.advancedFilter')}
+              {hasAdvancedFilters && <span className="w-1.5 h-1.5 rounded-full bg-destructive" />}
+              {showAdvanced ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </Button>
+            <Button size="sm" className="font-cairo gap-1 text-xs whitespace-nowrap shrink-0" onClick={() => navigate('/admin/orders/create')}>
+              <Plus className="w-3.5 h-3.5" /> إنشاء طلب
+            </Button>
+            <Button variant="outline" size="sm" className="font-cairo gap-1 text-xs whitespace-nowrap shrink-0" onClick={() => setImportDialog(true)}>
+              <Upload className="w-3.5 h-3.5" /> {t('import.uploadOrders')}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="font-cairo gap-1 text-xs whitespace-nowrap shrink-0"
+              onClick={() => { if (filtered.length === 0) return; setSelectedIds(new Set(filtered.map(o => o.id))); setDeliveryDialog(true); }}
+            >
+              <Truck className="w-3.5 h-3.5" /> {t('delivery.exportToDelivery')}
+            </Button>
+          </div>
         </div>
 
         {/* Advanced Filters */}
         {showAdvanced && (
-          <div className="bg-card border rounded-lg p-4 space-y-3">
+          <div className="bg-card border rounded-lg p-3 sm:p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-cairo font-semibold text-sm flex items-center gap-2">
+              <h3 className="font-cairo font-semibold text-xs sm:text-sm flex items-center gap-2">
                 <Filter className="w-4 h-4 text-primary" /> {t('orders.advancedFilter')}
               </h3>
               {hasAdvancedFilters && (
-                <Button variant="ghost" size="sm" className="font-cairo text-xs" onClick={clearAdvanced}>
+                <Button variant="ghost" size="sm" className="font-cairo text-xs h-7" onClick={clearAdvanced}>
                   {t('orders.clearFilters')}
                 </Button>
               )}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
               <div>
                 <Label className="font-cairo text-xs">{t('orders.wilaya')}</Label>
                 <Select value={wilayaFilter} onValueChange={setWilayaFilter}>
-                  <SelectTrigger className="font-cairo mt-1 h-9 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="font-cairo mt-1 h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="الكل" className="font-cairo">{t('common.all')}</SelectItem>
                     {wilayas?.map(w => <SelectItem key={w} value={w} className="font-cairo">{w}</SelectItem>)}
@@ -347,7 +347,7 @@ export default function AdminOrdersPage() {
               <div>
                 <Label className="font-cairo text-xs">{t('orders.paymentMethod')}</Label>
                 <Select value={paymentFilter} onValueChange={setPaymentFilter}>
-                  <SelectTrigger className="font-cairo mt-1 h-9 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="font-cairo mt-1 h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="الكل" className="font-cairo">{t('common.all')}</SelectItem>
                     <SelectItem value="cod" className="font-cairo">{t('orders.cod')}</SelectItem>
@@ -358,19 +358,19 @@ export default function AdminOrdersPage() {
               </div>
               <div>
                 <Label className="font-cairo text-xs">{t('orders.fromDate')}</Label>
-                <Input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="mt-1 h-9 text-xs" />
+                <Input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="mt-1 h-8 text-xs" />
               </div>
               <div>
                 <Label className="font-cairo text-xs">{t('orders.toDate')}</Label>
-                <Input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="mt-1 h-9 text-xs" />
+                <Input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="mt-1 h-8 text-xs" />
               </div>
               <div>
                 <Label className="font-cairo text-xs">{t('orders.minAmount')}</Label>
-                <Input type="number" value={minTotal} onChange={e => setMinTotal(e.target.value)} placeholder="0" className="mt-1 h-9 text-xs font-roboto" />
+                <Input type="number" value={minTotal} onChange={e => setMinTotal(e.target.value)} placeholder="0" className="mt-1 h-8 text-xs font-roboto" />
               </div>
               <div>
                 <Label className="font-cairo text-xs">{t('orders.maxAmount')}</Label>
-                <Input type="number" value={maxTotal} onChange={e => setMaxTotal(e.target.value)} placeholder="∞" className="mt-1 h-9 text-xs font-roboto" />
+                <Input type="number" value={maxTotal} onChange={e => setMaxTotal(e.target.value)} placeholder="∞" className="mt-1 h-8 text-xs font-roboto" />
               </div>
             </div>
             <p className="font-cairo text-xs text-muted-foreground">{t('orders.matchingOrders').replace('{n}', String(filtered.length))}</p>
@@ -379,55 +379,45 @@ export default function AdminOrdersPage() {
 
         {/* Bulk Actions Bar */}
         {someSelected && (
-          <div className="flex flex-wrap items-center gap-3 bg-primary/5 border border-primary/20 rounded-lg p-3">
-            <CheckSquare className="w-5 h-5 text-primary" />
-            <span className="font-cairo text-sm font-medium text-primary">{t('common.selected').replace('{n}', String(selectedIds.size))}</span>
-            <div className="flex flex-wrap gap-2 mr-auto">
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-2 sm:p-3 space-y-2">
+            <div className="flex items-center gap-2">
+              <CheckSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
+              <span className="font-cairo text-xs sm:text-sm font-medium text-primary">{t('common.selected').replace('{n}', String(selectedIds.size))}</span>
+              <Button size="sm" variant="ghost" className="font-cairo text-xs h-7 mr-auto" onClick={() => setSelectedIds(new Set())}>
+                {t('common.deselectAll')}
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
               {STATUSES.map(s => {
                 const cfg = STATUS_CONFIG[s];
                 const Icon = cfg.icon;
                 return (
-                  <Button
-                    key={s}
-                    size="sm"
-                    variant="outline"
-                    className={`font-cairo gap-1.5 text-xs ${cfg.color}`}
-                    onClick={() => handleBulkQuickStatus(s)}
-                    disabled={bulkUpdateStatus.isPending}
-                  >
-                    <Icon className="w-3.5 h-3.5" /> {t(STATUS_KEYS[s])}
+                  <Button key={s} size="sm" variant="outline" className={`font-cairo gap-1 text-xs h-7 px-2 ${cfg.color}`} onClick={() => handleBulkQuickStatus(s)} disabled={bulkUpdateStatus.isPending}>
+                    <Icon className="w-3 h-3" /> <span className="hidden sm:inline">{t(STATUS_KEYS[s])}</span>
                   </Button>
                 );
               })}
+              <Button size="sm" variant="outline" className="font-cairo gap-1 text-xs h-7 px-2" onClick={() => setDeliveryDialog(true)}>
+                <Truck className="w-3 h-3" /> <span className="hidden sm:inline">{t('delivery.sendToDelivery')}</span>
+              </Button>
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              className="font-cairo gap-1.5 text-xs"
-              onClick={() => setDeliveryDialog(true)}
-            >
-              <Truck className="w-3.5 h-3.5" /> {t('delivery.sendToDelivery')}
-            </Button>
-            <Button size="sm" variant="ghost" className="font-cairo text-xs" onClick={() => setSelectedIds(new Set())}>
-              {t('common.deselectAll')}
-            </Button>
           </div>
         )}
 
-        {/* Desktop Table */}
-        <div className="hidden md:block bg-card border rounded-lg overflow-x-auto">
+        {/* Desktop Table (lg+) */}
+        <div className="hidden lg:block bg-card border rounded-lg overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted">
               <tr>
-                <th className="p-3 text-right"><Checkbox checked={allSelected} onCheckedChange={toggleSelectAll} /></th>
-                <th className="p-3 text-right font-cairo">{t('orders.orderNumber')}</th>
-                <th className="p-3 text-right font-cairo">{t('orders.customer')}</th>
-                <th className="p-3 text-right font-cairo">{t('orders.phone')}</th>
-                <th className="p-3 text-right font-cairo">{t('orders.wilaya')}</th>
-                <th className="p-3 text-right font-cairo">{t('orders.total')}</th>
-                <th className="p-3 text-right font-cairo">{t('orders.status')}</th>
-                <th className="p-3 text-right font-cairo">{t('orders.date')}</th>
-                <th className="p-3 text-right font-cairo">{t('common.actions')}</th>
+                <th className="p-2 lg:p-3 text-right w-10"><Checkbox checked={allSelected} onCheckedChange={toggleSelectAll} /></th>
+                <th className="p-2 lg:p-3 text-right font-cairo text-xs">{t('orders.orderNumber')}</th>
+                <th className="p-2 lg:p-3 text-right font-cairo text-xs">{t('orders.customer')}</th>
+                <th className="p-2 lg:p-3 text-right font-cairo text-xs">{t('orders.phone')}</th>
+                <th className="p-2 lg:p-3 text-right font-cairo text-xs">{t('orders.wilaya')}</th>
+                <th className="p-2 lg:p-3 text-right font-cairo text-xs">{t('orders.total')}</th>
+                <th className="p-2 lg:p-3 text-right font-cairo text-xs">{t('orders.status')}</th>
+                <th className="p-2 lg:p-3 text-right font-cairo text-xs">{t('orders.date')}</th>
+                <th className="p-2 lg:p-3 text-right font-cairo text-xs">{t('common.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -438,14 +428,14 @@ export default function AdminOrdersPage() {
                 const StatusIcon = statusCfg.icon;
                 return (
                   <tr key={o.id} className={`border-b hover:bg-muted/50 ${selectedIds.has(o.id) ? 'bg-primary/5' : ''}`}>
-                    <td className="p-3"><Checkbox checked={selectedIds.has(o.id)} onCheckedChange={() => toggleSelect(o.id)} /></td>
-                    <td className="p-3 font-roboto font-bold text-primary">
+                    <td className="p-2 lg:p-3"><Checkbox checked={selectedIds.has(o.id)} onCheckedChange={() => toggleSelect(o.id)} /></td>
+                    <td className="p-2 lg:p-3 font-roboto font-bold text-primary text-xs">
                       {o.order_number}
                       {(o as any).landing_page_id && <span className="ml-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-cairo">🚀</span>}
                     </td>
-                    <td className="p-3 font-cairo">{o.customer_name}</td>
-                    <td className="p-3 font-roboto text-xs">{o.customer_phone}</td>
-                    <td className="p-3 font-cairo text-xs">
+                    <td className="p-2 lg:p-3 font-cairo text-xs">{o.customer_name}</td>
+                    <td className="p-2 lg:p-3 font-roboto text-xs">{o.customer_phone}</td>
+                    <td className="p-2 lg:p-3 font-cairo text-xs">
                       <span className="flex items-center gap-1">
                         {wilayaName}
                         {cancelRate !== undefined && (
@@ -453,12 +443,12 @@ export default function AdminOrdersPage() {
                         )}
                       </span>
                     </td>
-                    <td className="p-3 font-roboto">{formatPrice(Number(o.total_amount))}</td>
-                    <td className="p-3">
+                    <td className="p-2 lg:p-3 font-roboto text-xs">{formatPrice(Number(o.total_amount))}</td>
+                    <td className="p-2 lg:p-3">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-cairo cursor-pointer hover:opacity-80 transition-opacity ${statusCfg.bg} ${statusCfg.color}`}>
-                            <StatusIcon className="w-3.5 h-3.5" /> {t(STATUS_KEYS[o.status || 'جديد'])}
+                          <button className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-cairo cursor-pointer hover:opacity-80 transition-opacity ${statusCfg.bg} ${statusCfg.color}`}>
+                            <StatusIcon className="w-3 h-3" /> {t(STATUS_KEYS[o.status || 'جديد'])}
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start" className="bg-popover border z-50 min-w-[160px]">
@@ -470,29 +460,86 @@ export default function AdminOrdersPage() {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>
-                    <td className="p-3 font-cairo text-xs text-muted-foreground">{formatDate(o.created_at!)}</td>
-                    <td className="p-3">
+                    <td className="p-2 lg:p-3 font-cairo text-xs text-muted-foreground">{formatDate(o.created_at!)}</td>
+                    <td className="p-2 lg:p-3">
                       <div className="flex items-center gap-1">
                         <Tooltip>
-                          <TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setSelectedOrder(o); setNewStatus(o.status || 'جديد'); }}><Eye className="w-4 h-4" /></Button></TooltipTrigger>
+                          <TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setSelectedOrder(o); setNewStatus(o.status || 'جديد'); }}><Eye className="w-3.5 h-3.5" /></Button></TooltipTrigger>
                           <TooltipContent className="font-cairo">{t('common.view')}</TooltipContent>
                         </Tooltip>
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="w-4 h-4" /></Button></DropdownMenuTrigger>
+                          <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="w-3.5 h-3.5" /></Button></DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="bg-popover border z-50 min-w-[160px]">
-                            {STATUSES.map(s => {
-                              const cfg = STATUS_CONFIG[s];
-                              const Icon = cfg.icon;
-                              return (
-                                <DropdownMenuItem key={s} onClick={() => handleQuickStatus(o.id, s)} className="font-cairo gap-2 cursor-pointer">
-                                  <Icon className={`w-4 h-4 ${cfg.color}`} /> {t(STATUS_KEYS[s])}
-                                </DropdownMenuItem>
-                              );
-                            })}
+                            {STATUSES.map(s => { const cfg = STATUS_CONFIG[s]; const Icon = cfg.icon; return (
+                              <DropdownMenuItem key={s} onClick={() => handleQuickStatus(o.id, s)} className="font-cairo gap-2 cursor-pointer"><Icon className={`w-4 h-4 ${cfg.color}`} /> {t(STATUS_KEYS[s])}</DropdownMenuItem>
+                            ); })}
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleteOrderId(o.id)} className="font-cairo gap-2 cursor-pointer text-destructive focus:text-destructive">
-                              <Trash2 className="w-4 h-4" /> حذف الطلبية
-                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeleteOrderId(o.id)} className="font-cairo gap-2 cursor-pointer text-destructive focus:text-destructive"><Trash2 className="w-4 h-4" /> حذف الطلبية</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Tablet Table (md only) */}
+        <div className="hidden md:block lg:hidden bg-card border rounded-lg overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead className="bg-muted">
+              <tr>
+                <th className="p-2 text-right w-8"><Checkbox checked={allSelected} onCheckedChange={toggleSelectAll} /></th>
+                <th className="p-2 text-right font-cairo">{t('orders.orderNumber')}</th>
+                <th className="p-2 text-right font-cairo">{t('orders.customer')}</th>
+                <th className="p-2 text-right font-cairo">{t('orders.wilaya')}</th>
+                <th className="p-2 text-right font-cairo">{t('orders.total')}</th>
+                <th className="p-2 text-right font-cairo">{t('orders.status')}</th>
+                <th className="p-2 text-right font-cairo">{t('common.actions')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(o => {
+                const wilayaName = (o as any).wilayas?.name;
+                const statusCfg = STATUS_CONFIG[o.status || 'جديد'] || STATUS_CONFIG['جديد'];
+                const StatusIcon = statusCfg.icon;
+                return (
+                  <tr key={o.id} className={`border-b hover:bg-muted/50 ${selectedIds.has(o.id) ? 'bg-primary/5' : ''}`}>
+                    <td className="p-2"><Checkbox checked={selectedIds.has(o.id)} onCheckedChange={() => toggleSelect(o.id)} /></td>
+                    <td className="p-2 font-roboto font-bold text-primary">{o.order_number}</td>
+                    <td className="p-2 font-cairo">
+                      <div>{o.customer_name}</div>
+                      <div className="font-roboto text-muted-foreground">{o.customer_phone}</div>
+                    </td>
+                    <td className="p-2 font-cairo">{wilayaName || '—'}</td>
+                    <td className="p-2 font-roboto">{formatPrice(Number(o.total_amount))}</td>
+                    <td className="p-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-cairo cursor-pointer ${statusCfg.bg} ${statusCfg.color}`}>
+                            <StatusIcon className="w-2.5 h-2.5" /> {t(STATUS_KEYS[o.status || 'جديد'])}
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="bg-popover border z-50 min-w-[140px]">
+                          {STATUSES.map(s => { const cfg = STATUS_CONFIG[s]; const Icon = cfg.icon; return (
+                            <DropdownMenuItem key={s} onClick={() => handleQuickStatus(o.id, s)} className="font-cairo gap-2 cursor-pointer text-xs"><Icon className={`w-3.5 h-3.5 ${cfg.color}`} /> {t(STATUS_KEYS[s])}</DropdownMenuItem>
+                          ); })}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                    <td className="p-2">
+                      <div className="flex items-center gap-0.5">
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setSelectedOrder(o); setNewStatus(o.status || 'جديد'); }}><Eye className="w-3.5 h-3.5" /></Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="w-3.5 h-3.5" /></Button></DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="bg-popover border z-50">
+                            {STATUSES.map(s => { const cfg = STATUS_CONFIG[s]; const Icon = cfg.icon; return (
+                              <DropdownMenuItem key={s} onClick={() => handleQuickStatus(o.id, s)} className="font-cairo gap-2 cursor-pointer text-xs"><Icon className={`w-3.5 h-3.5 ${cfg.color}`} /> {t(STATUS_KEYS[s])}</DropdownMenuItem>
+                            ); })}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => setDeleteOrderId(o.id)} className="font-cairo gap-2 cursor-pointer text-destructive text-xs"><Trash2 className="w-3.5 h-3.5" /> حذف</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
@@ -505,44 +552,61 @@ export default function AdminOrdersPage() {
         </div>
 
         {/* Mobile Cards */}
-        <div className="md:hidden space-y-3">
+        <div className="md:hidden space-y-2">
+          {filtered.length > 0 && (
+            <div className="flex items-center gap-2 px-1">
+              <Checkbox checked={allSelected} onCheckedChange={toggleSelectAll} />
+              <span className="font-cairo text-xs text-muted-foreground">{t('orders.matchingOrders').replace('{n}', String(filtered.length))}</span>
+            </div>
+          )}
           {filtered.map(o => {
             const wilayaName = (o as any).wilayas?.name;
             const statusCfg = STATUS_CONFIG[o.status || 'جديد'] || STATUS_CONFIG['جديد'];
             const StatusIcon = statusCfg.icon;
+            const isSelected = selectedIds.has(o.id);
             return (
-              <div key={o.id} className="bg-card border rounded-xl p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-roboto font-bold text-primary text-sm">
+              <div key={o.id} className={`bg-card border rounded-xl p-3 space-y-2 transition-colors ${isSelected ? 'border-primary/40 bg-primary/5' : ''}`}>
+                <div className="flex items-center gap-2">
+                  <Checkbox checked={isSelected} onCheckedChange={() => toggleSelect(o.id)} className="shrink-0" />
+                  <span className="font-roboto font-bold text-primary text-xs flex-1 min-w-0 truncate">
                     {o.order_number}
-                    {(o as any).landing_page_id && <span className="ml-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-cairo">🚀</span>}
+                    {(o as any).landing_page_id && <span className="ml-1 text-[10px] bg-primary/10 text-primary px-1 py-0.5 rounded-full font-cairo">🚀</span>}
                   </span>
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-cairo ${statusCfg.bg} ${statusCfg.color}`}>
-                    <StatusIcon className="w-3 h-3" /> {t(STATUS_KEYS[o.status || 'جديد'])}
-                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-cairo cursor-pointer shrink-0 ${statusCfg.bg} ${statusCfg.color}`}>
+                        <StatusIcon className="w-3 h-3" /> {t(STATUS_KEYS[o.status || 'جديد'])}
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-popover border z-50 min-w-[150px]">
+                      {STATUSES.map(s => { const cfg = STATUS_CONFIG[s]; const Icon = cfg.icon; const isActive = o.status === s; return (
+                        <DropdownMenuItem key={s} onClick={() => !isActive && handleQuickStatus(o.id, s)} className={`font-cairo gap-2 cursor-pointer text-xs ${isActive ? 'bg-muted font-bold' : ''}`}>
+                          <Icon className={`w-3.5 h-3.5 ${cfg.color}`} /> {t(STATUS_KEYS[s])}
+                        </DropdownMenuItem>
+                      ); })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs font-cairo">
-                  <div><span className="text-muted-foreground">{t('orders.customer')}:</span> {o.customer_name}</div>
-                  <div><span className="text-muted-foreground">{t('orders.phone')}:</span> <span className="font-roboto">{o.customer_phone}</span></div>
-                  <div><span className="text-muted-foreground">{t('orders.wilaya')}:</span> {wilayaName || '—'}</div>
-                  <div><span className="text-muted-foreground">{t('orders.date')}:</span> {formatDate(o.created_at!)}</div>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs font-cairo">
+                  <div className="truncate"><span className="text-muted-foreground">{t('orders.customer')}: </span>{o.customer_name}</div>
+                  <div className="truncate"><span className="text-muted-foreground">{t('orders.phone')}: </span><span className="font-roboto" dir="ltr">{o.customer_phone}</span></div>
+                  <div className="truncate"><span className="text-muted-foreground">{t('orders.wilaya')}: </span>{wilayaName || '—'}</div>
+                  <div className="truncate"><span className="text-muted-foreground">{t('orders.date')}: </span>{formatDate(o.created_at!)}</div>
                 </div>
-                <div className="flex items-center justify-between pt-1 border-t">
+                <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
                   <span className="font-roboto font-bold text-sm">{formatPrice(Number(o.total_amount))}</span>
                   <div className="flex gap-1">
-                    <Button variant="outline" size="sm" className="h-8 font-cairo text-xs" onClick={() => { setSelectedOrder(o); setNewStatus(o.status || 'جديد'); }}>
-                      <Eye className="w-3.5 h-3.5 ml-1" /> {t('common.view')}
+                    <Button variant="outline" size="sm" className="h-7 px-2 font-cairo text-xs" onClick={() => { setSelectedOrder(o); setNewStatus(o.status || 'جديد'); }}>
+                      <Eye className="w-3 h-3 ml-1" /> {t('common.view')}
                     </Button>
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild><Button variant="outline" size="icon" className="h-8 w-8"><MoreHorizontal className="w-4 h-4" /></Button></DropdownMenuTrigger>
+                      <DropdownMenuTrigger asChild><Button variant="outline" size="icon" className="h-7 w-7"><MoreHorizontal className="w-3.5 h-3.5" /></Button></DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-popover border z-50">
                         {STATUSES.map(s => { const cfg = STATUS_CONFIG[s]; const Icon = cfg.icon; return (
-                          <DropdownMenuItem key={s} onClick={() => handleQuickStatus(o.id, s)} className={`font-cairo gap-2 cursor-pointer ${cfg.color}`}><Icon className="w-4 h-4" /> {t(STATUS_KEYS[s])}</DropdownMenuItem>
+                          <DropdownMenuItem key={s} onClick={() => handleQuickStatus(o.id, s)} className={`font-cairo gap-2 cursor-pointer text-xs ${cfg.color}`}><Icon className="w-3.5 h-3.5" /> {t(STATUS_KEYS[s])}</DropdownMenuItem>
                         ); })}
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => setDeleteOrderId(o.id)} className="font-cairo gap-2 cursor-pointer text-destructive focus:text-destructive">
-                          <Trash2 className="w-4 h-4" /> حذف الطلبية
-                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setDeleteOrderId(o.id)} className="font-cairo gap-2 cursor-pointer text-destructive focus:text-destructive text-xs"><Trash2 className="w-3.5 h-3.5" /> حذف</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
