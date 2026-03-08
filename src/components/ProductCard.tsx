@@ -107,19 +107,19 @@ export default function ProductCard({ id, name, price, oldPrice, image, images, 
 
   return (
     <>
-    <Link to={`/product/${id}`} className="group block animate-fade-in">
-      <div className="bg-card rounded-3xl border border-border/50 overflow-hidden hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-0.5 transition-all duration-300">
+    <Link to={`/product/${id}`} className="group block">
+      <div className="bg-card rounded-2xl border border-border/50 overflow-hidden hover:border-primary/30 hover:shadow-[0_0_30px_hsl(var(--primary)/0.1)] hover:-translate-y-1 transition-all duration-300">
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           {allImages.length > 0 ? (
             <img
               src={allImages[currentIndex]}
               alt={name}
-              className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/10">
+            <div className="w-full h-full flex items-center justify-center bg-muted">
               <ShoppingCart className="w-10 h-10 text-muted-foreground/30" />
             </div>
           )}
@@ -134,26 +134,26 @@ export default function ProductCard({ id, name, price, oldPrice, image, images, 
               </button>
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
                 {allImages.map((_, i) => (
-                  <button key={i} onClick={(e) => handleDotClick(e, i)} className={`w-1.5 h-1.5 rounded-full transition-all ${i === currentIndex ? 'bg-background w-3' : 'bg-background/60'}`} />
+                  <button key={i} onClick={(e) => handleDotClick(e, i)} className={`w-1.5 h-1.5 rounded-full transition-all ${i === currentIndex ? 'bg-primary w-3 shadow-[0_0_6px_hsl(var(--primary)/0.5)]' : 'bg-foreground/40'}`} />
                 ))}
               </div>
             </>
           )}
 
           {outOfStock && (
-            <div className="absolute inset-0 bg-foreground/50 backdrop-blur-[3px] flex items-center justify-center">
+            <div className="absolute inset-0 bg-background/60 backdrop-blur-[3px] flex items-center justify-center">
               <Badge variant="destructive" className="font-cairo text-sm px-5 py-2 rounded-full shadow-lg">غير متوفر</Badge>
             </div>
           )}
 
-          {/* Top-left badges */}
+          {/* Top badges */}
           <div className="absolute top-3 right-3 flex flex-col gap-1.5">
             {discount > 0 && (
-              <Badge className="font-cairo text-[11px] bg-gradient-to-l from-red-500 to-red-600 text-white border-0 rounded-full px-3 py-1 shadow-md shadow-red-500/20">
-                خصم {discount}%
+              <Badge className="font-bebas text-sm tracking-wider bg-destructive text-destructive-foreground border-0 rounded-lg px-3 py-1 shadow-md">
+                -{discount}%
               </Badge>
             )}
-            <Badge className="font-cairo text-[11px] bg-foreground/60 backdrop-blur-md text-background border-0 rounded-full px-3 py-1">
+            <Badge className="font-cairo text-[10px] bg-background/70 backdrop-blur-md text-foreground border-0 rounded-lg px-2.5 py-1">
               {Array.isArray(category) ? category[0] : category}
             </Badge>
           </div>
@@ -172,29 +172,29 @@ export default function ProductCard({ id, name, price, oldPrice, image, images, 
             className={`absolute top-3 left-3 w-9 h-9 rounded-full backdrop-blur-md flex items-center justify-center transition-all duration-300 ${
               wishlisted
                 ? 'bg-destructive/90 text-white scale-110 shadow-md shadow-destructive/30'
-                : 'bg-background/70 text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive hover:scale-110'
+                : 'bg-background/50 text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive hover:scale-110'
             }`}
             aria-label={wishlisted ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}
           >
             <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
           </button>
 
-          {/* Quick View button */}
+          {/* Quick View */}
           <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               setQuickViewOpen(true);
             }}
-            className="absolute bottom-3 left-3 w-9 h-9 rounded-full bg-background/70 backdrop-blur-md flex items-center justify-center text-muted-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background hover:text-foreground hover:scale-110 shadow-md"
+            className="absolute bottom-3 left-3 w-9 h-9 rounded-full bg-background/50 backdrop-blur-md flex items-center justify-center text-muted-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background hover:text-foreground hover:scale-110 shadow-md"
             aria-label="عرض سريع"
           >
             <Eye className="w-4 h-4" />
           </button>
 
           {/* Hover add-to-cart overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-foreground/70 via-foreground/40 to-transparent p-3.5 pt-10 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-            <Button size="sm" onClick={handleAdd} disabled={outOfStock} className="w-full font-cairo text-xs gap-1.5 rounded-xl h-9 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/80 via-background/40 to-transparent p-3.5 pt-10 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+            <Button size="sm" onClick={handleAdd} disabled={outOfStock} className="w-full font-cairo text-xs gap-1.5 rounded-xl h-9 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30">
               <ShoppingCart className="w-3.5 h-3.5" />
               أضف للسلة
             </Button>
@@ -207,19 +207,17 @@ export default function ProductCard({ id, name, price, oldPrice, image, images, 
             {name}
           </h3>
 
-          {/* Star rating */}
           {reviewStats && (
             <div className="flex items-center gap-1.5">
               <div className="flex gap-0.5" dir="ltr">
                 {[1, 2, 3, 4, 5].map(s => (
-                  <Star key={s} className={`w-3.5 h-3.5 transition-colors ${s <= Math.round(reviewStats.avg) ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20'}`} />
+                  <Star key={s} className={`w-3.5 h-3.5 transition-colors ${s <= Math.round(reviewStats.avg) ? 'fill-accent text-accent' : 'text-muted-foreground/20'}`} />
                 ))}
               </div>
               <span className="font-cairo text-[10px] text-muted-foreground font-medium">({reviewStats.count})</span>
             </div>
           )}
 
-          {/* Variation badges */}
           {variationTypes && Object.keys(variationTypes).length > 0 && (
             <div className="flex flex-wrap gap-1">
               {Object.entries(variationTypes).map(([type, count]) => (
@@ -233,7 +231,7 @@ export default function ProductCard({ id, name, price, oldPrice, image, images, 
           <div className="space-y-2.5 pt-0.5">
             <div className="flex items-center justify-between">
               <div className="flex items-baseline gap-2">
-                <span className="font-roboto font-extrabold text-primary text-lg tracking-tight">
+                <span className="font-bebas text-primary text-2xl tracking-wide">
                   {formatPrice(price)}
                 </span>
                 {oldPrice && oldPrice > price && (
@@ -243,7 +241,7 @@ export default function ProductCard({ id, name, price, oldPrice, image, images, 
                 )}
               </div>
               {(shippingPrice ?? 0) > 0 && (
-                <p className="font-cairo text-[10px] text-muted-foreground flex items-center gap-0.5 bg-muted/50 px-1.5 py-0.5 rounded-md">
+                <p className="font-cairo text-[10px] text-muted-foreground flex items-center gap-0.5 bg-muted px-1.5 py-0.5 rounded-md">
                   <Truck className="w-3 h-3" /> {formatPrice(shippingPrice!)}
                 </p>
               )}
@@ -252,7 +250,7 @@ export default function ProductCard({ id, name, price, oldPrice, image, images, 
               <Button size="sm" variant="outline" disabled={outOfStock} onClick={handleAdd} className="font-cairo text-xs gap-1 rounded-xl h-9 px-3 shrink-0 border-border hover:border-primary/30 hover:bg-primary/5 transition-all duration-300">
                 <ShoppingCart className="w-3.5 h-3.5" />
               </Button>
-              <Button size="sm" disabled={outOfStock} onClick={handleDirectOrder} className="font-cairo text-xs gap-1 rounded-xl h-9 flex-1 shadow-sm hover:shadow-md hover:shadow-primary/20 transition-all duration-300 bg-gradient-to-l from-primary to-primary/90">
+              <Button size="sm" disabled={outOfStock} onClick={handleDirectOrder} className="font-cairo text-xs gap-1 rounded-xl h-9 flex-1 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90">
                 <Zap className="w-3.5 h-3.5" />
                 اطلب الآن
               </Button>
@@ -262,7 +260,6 @@ export default function ProductCard({ id, name, price, oldPrice, image, images, 
       </div>
     </Link>
 
-    {/* Quick View Modal */}
     {quickViewOpen && (
       <QuickViewModal
         product={{
