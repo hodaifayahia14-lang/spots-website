@@ -19,8 +19,8 @@ serve(async (req) => {
 
     // Check if already seeded
     const { count } = await supabase.from("products").select("*", { count: "exact", head: true });
-    if ((count || 0) >= 10) {
-      return new Response(JSON.stringify({ error: "Database already has data. Clear tables first." }), {
+    if ((count || 0) >= 12) {
+      return new Response(JSON.stringify({ error: "قاعدة البيانات تحتوي بالفعل على بيانات. قم بحذف البيانات أولاً." }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
