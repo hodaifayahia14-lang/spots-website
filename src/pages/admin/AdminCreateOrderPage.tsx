@@ -231,20 +231,8 @@ export default function AdminCreateOrderPage() {
       const { error: itemsError } = await supabase.from('order_items').insert(items);
       if (itemsError) throw itemsError;
 
-      // Deduct stock
-      for (const item of orderItems) {
-        const { data: prod } = await supabase
-          .from('products')
-          .select('stock')
-          .eq('id', item.productId)
-          .single();
-        if (prod) {
-          await supabase
-            .from('products')
-            .update({ stock: Math.max(0, (prod.stock || 0) - item.quantity) })
-            .eq('id', item.productId);
-        }
-      }
+      // Stock is deducted automatically by the DB trigger when status changes to 'تم التسليم'
+      // No manual stock deduction here to avoid double-deduction
 
       return order;
     },
