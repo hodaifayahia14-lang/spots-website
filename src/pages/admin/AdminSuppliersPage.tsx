@@ -174,7 +174,7 @@ export default function AdminSuppliersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map(s => (
+                {paginatedFiltered.map(s => (
                   <TableRow key={s.id} className="row-accent cursor-pointer" onClick={() => navigate(`/admin/suppliers/${s.id}`)}>
                     <TableCell className="font-cairo font-medium">{s.name}</TableCell>
                     <TableCell className="font-cairo text-muted-foreground text-sm">{s.category || '—'}</TableCell>
