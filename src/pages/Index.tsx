@@ -529,8 +529,8 @@ export default function IndexPage() {
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: Timer, title: 'شحن سريع', desc: 'نوصل طلبك في أسرع وقت ممكن لجميع الولايات', gradient: 'from-blue-500 to-indigo-600' },
-              { icon: BadgeCheck, title: 'جودة مضمونة', desc: 'جميع منتجاتنا طبيعية 100% وتخضع لفحص دقيق', gradient: 'from-emerald-500 to-teal-600' },
+              { icon: Timer, title: 'شحن سريع', desc: 'نوصل طلبك في أسرع وقت ممكن لجميع الولايات', gradient: 'from-amber-600 to-orange-600' },
+              { icon: BadgeCheck, title: 'جودة مضمونة', desc: 'جميع منتجاتنا طبيعية 100% وتخضع لفحص دقيق', gradient: 'from-yellow-600 to-amber-600' },
               { icon: HeadphonesIcon, title: 'خدمة عملاء متميزة', desc: 'فريق دعم جاهز لمساعدتك على مدار الساعة', gradient: 'from-amber-500 to-orange-600' },
             ].map((feat, i) => (
               <AnimatedSection key={i} delay={i * 120}>
