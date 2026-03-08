@@ -64,54 +64,12 @@ serve(async (req) => {
       { name: "شاحن متعدد المنافذ", category: ["إلكترونيات", "إكسسوارات"], price: 2800, old_price: 3500, stock: 55, description: "شاحن USB-C سريع 65 وات مع 4 منافذ", short_description: "شاحن سريع 65W", sku: "CHARGE-001", slug: "multi-charger", product_type: "physical" },
     ];
 
-    // Generate images for products
+    // Insert products without images (use generate-product-images later for AI images)
     const productIds: string[] = [];
     for (const product of products) {
-      let images: string[] = [];
-
-      if (LOVABLE_API_KEY) {
-        try {
-          const prompt = `Professional product photography of "${product.name}" on a clean white background, e-commerce style, high quality, well-lit, centered composition`;
-          const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${LOVABLE_API_KEY}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              model: "google/gemini-2.5-flash-image",
-              messages: [{ role: "user", content: prompt }],
-              modalities: ["image", "text"],
-            }),
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            const imageData = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-            if (imageData) {
-              const base64 = imageData.replace(/^data:image\/\w+;base64,/, "");
-              const binaryData = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
-              const fileName = `seed-${product.slug}-${Date.now()}.png`;
-              const { error: uploadError } = await supabase.storage
-                .from("products")
-                .upload(fileName, binaryData, { contentType: "image/png", upsert: true });
-
-              if (!uploadError) {
-                const { data: urlData } = supabase.storage.from("products").getPublicUrl(fileName);
-                images = [urlData.publicUrl];
-              }
-            }
-          }
-          // Rate limit delay
-          await new Promise(r => setTimeout(r, 3000));
-        } catch (err) {
-          console.error(`Image gen failed for ${product.name}:`, err);
-        }
-      }
-
       const { data: inserted, error } = await supabase.from("products").insert({
         ...product,
-        images,
+        images: [],
         is_active: true,
         main_image_index: 0,
       }).select("id").single();
