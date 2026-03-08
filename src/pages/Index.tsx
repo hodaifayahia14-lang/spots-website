@@ -433,8 +433,8 @@ export default function IndexPage() {
                 <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-secondary/20 rounded-full blur-2xl" />
                 <div className="absolute -top-6 -left-6 w-36 h-36 bg-primary/10 rounded-full blur-3xl" />
                 <div className="absolute -bottom-4 left-6 bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl p-3 shadow-xl animate-fade-in hidden sm:flex items-center gap-3" style={{ animationDelay: '0.5s' }}>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                    <ThumbsUp className="w-5 h-5 text-emerald-500" />
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                    <ThumbsUp className="w-5 h-5 text-amber-500" />
                   </div>
                   <div>
                     <p className="font-cairo font-bold text-sm">+10,000</p>
