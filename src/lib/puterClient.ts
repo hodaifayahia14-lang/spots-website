@@ -1,12 +1,11 @@
-let puterLoadPromise: Promise<void> | null = null;
-let puterLoadPromise: Promise<void> | null = null;
+let _puterLoadPromise: Promise<void> | null = null;
 
 export async function ensurePuterLoaded(): Promise<void> {
   if (typeof window === 'undefined') return;
   if (window.puter?.ai) return;
 
-  if (!puterLoadPromise) {
-    puterLoadPromise = new Promise((resolve, reject) => {
+  if (!_puterLoadPromise) {
+    _puterLoadPromise = new Promise((resolve, reject) => {
       const existingScript = document.querySelector('script[data-puter="true"]') as HTMLScriptElement | null;
 
       if (existingScript) {
@@ -25,7 +24,7 @@ export async function ensurePuterLoaded(): Promise<void> {
     });
   }
 
-  await puterLoadPromise;
+  await _puterLoadPromise;
 
   if (!window.puter?.ai) {
     throw new Error('Puter.js loaded but API is unavailable');
