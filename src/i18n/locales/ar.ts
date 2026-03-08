@@ -970,6 +970,20 @@ export const ar: Record<string, string> = {
   'delivery.importSuccess': 'تم تحديث {n} ولاية بنجاح',
   'delivery.invalidFile': 'ملف غير صالح',
 
+  // ═══ Statistics ═══
+  'stats.title': 'الإحصائيات',
+  'stats.description': 'تحليل أداء المبيعات والمنتجات والولايات',
+  'stats.totalOrders': 'إجمالي الطلبات',
+  'stats.revenue': 'الإيرادات',
+  'stats.delivered': 'تم التسليم',
+  'stats.cancelRate': 'نسبة الإلغاء',
+  'stats.deliveryRate': 'نسبة التسليم',
+  'stats.topProducts': 'أفضل المنتجات مبيعاً',
+  'stats.topWilayas': 'أفضل الولايات حسب الطلب',
+  'stats.unitsSold': 'وحدة مباعة',
+  'stats.wilaya': 'الولاية',
+  'stats.noData': 'لا توجد بيانات كافية',
+
   // ═══ Dashboard Payment Alerts ═══
   'dashboard.suppliersToPayTitle': '⚠ موردون بحاجة للدفع',
   'dashboard.clientsToCollectTitle': '💰 عملاء مدينون لك',
