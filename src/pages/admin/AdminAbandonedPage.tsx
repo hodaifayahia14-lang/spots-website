@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Search, Phone, ShoppingCart, Trash2, StickyNote, ArrowRight, ChevronDown, ChevronUp, PackageX, Users, DollarSign } from 'lucide-react';
 import { useTranslation } from '@/i18n';
+import TablePagination from '@/components/admin/TablePagination';
 
 interface AbandonedOrder {
   id: string;
