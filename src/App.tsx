@@ -50,6 +50,7 @@ import AdminClientDetailPage from "./pages/admin/AdminClientDetailPage";
 import AdminCreateOrderPage from "./pages/admin/AdminCreateOrderPage";
 import AdminDeliveryPage from "./pages/admin/settings/AdminDeliveryPage";
 import AdminPixelsPage from "./pages/admin/settings/AdminPixelsPage";
+import AdminStatisticsPage from "./pages/admin/AdminStatisticsPage";
 import AboutPage from "./pages/AboutPage";
 import LandingPage from "./pages/LandingPage";
 import WishlistPage from "./pages/WishlistPage";
