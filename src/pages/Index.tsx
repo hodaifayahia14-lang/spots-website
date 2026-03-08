@@ -137,9 +137,9 @@ export default function IndexPage() {
 
   const trustItems = [
     { icon: Droplets, label: 'عسل طبيعي 100%', desc: 'بدون إضافات', color: 'from-amber-500 to-yellow-500' },
-    { icon: Truck, label: 'توصيل سريع', desc: 'لجميع الولايات', color: 'from-emerald-500 to-teal-500' },
-    { icon: Shield, label: 'جودة معتمدة', desc: 'منتجات مختارة', color: 'from-blue-500 to-indigo-500' },
-    { icon: Leaf, label: 'بدون مواد حافظة', desc: '100% طبيعي', color: 'from-green-500 to-emerald-500' },
+    { icon: Truck, label: 'توصيل سريع', desc: 'لجميع الولايات', color: 'from-amber-600 to-orange-500' },
+    { icon: Shield, label: 'جودة معتمدة', desc: 'منتجات مختارة', color: 'from-amber-500 to-yellow-500' },
+    { icon: Leaf, label: 'بدون مواد حافظة', desc: '100% طبيعي', color: 'from-yellow-600 to-amber-500' },
   ];
 
   const categoryCards = [
@@ -529,8 +529,8 @@ export default function IndexPage() {
           </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: Timer, title: 'شحن سريع', desc: 'نوصل طلبك في أسرع وقت ممكن لجميع الولايات', gradient: 'from-blue-500 to-indigo-600' },
-              { icon: BadgeCheck, title: 'جودة مضمونة', desc: 'جميع منتجاتنا طبيعية 100% وتخضع لفحص دقيق', gradient: 'from-emerald-500 to-teal-600' },
+              { icon: Timer, title: 'شحن سريع', desc: 'نوصل طلبك في أسرع وقت ممكن لجميع الولايات', gradient: 'from-amber-600 to-orange-600' },
+              { icon: BadgeCheck, title: 'جودة مضمونة', desc: 'جميع منتجاتنا طبيعية 100% وتخضع لفحص دقيق', gradient: 'from-yellow-600 to-amber-600' },
               { icon: HeadphonesIcon, title: 'خدمة عملاء متميزة', desc: 'فريق دعم جاهز لمساعدتك على مدار الساعة', gradient: 'from-amber-500 to-orange-600' },
             ].map((feat, i) => (
               <AnimatedSection key={i} delay={i * 120}>
