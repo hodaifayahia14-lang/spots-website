@@ -246,7 +246,7 @@ export default function AdminCostsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(p => {
+                {paginatedFiltered.map(p => {
                   const isVariant = p.has_variants;
                   const hasCost = isVariant ? p.variantCostCount > 0 : !!p.baseCost;
                   const totalCost = p.baseCost?.total_cost_per_unit ?? 0;
